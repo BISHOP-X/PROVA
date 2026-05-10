@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Beneficiaries Hub | ProofPay</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container": "#ecedf7",
+                        "primary-fixed": "#d8e2ff",
+                        "primary-container": "#2771df",
+                        "primary": "#0058bd",
+                        "outline-variant": "#c2c6d5",
+                        "on-secondary-container": "#626566",
+                        "tertiary-fixed": "#ffdcc4",
+                        "surface-bright": "#f9f9ff",
+                        "error-container": "#ffdad6",
+                        "on-background": "#191b22",
+                        "on-primary-fixed": "#001a41",
+                        "secondary-fixed": "#e1e3e4",
+                        "on-secondary-fixed": "#191c1d",
+                        "inverse-surface": "#2e3038",
+                        "surface-container-highest": "#e1e2eb",
+                        "outline": "#727785",
+                        "error": "#ba1a1a",
+                        "primary-fixed-dim": "#adc6ff",
+                        "on-tertiary-fixed": "#2f1400",
+                        "inverse-primary": "#adc6ff",
+                        "on-primary": "#ffffff",
+                        "on-tertiary-container": "#fffbff",
+                        "on-surface-variant": "#424753",
+                        "on-error": "#ffffff",
+                        "background": "#f9f9ff",
+                        "surface-variant": "#e1e2eb",
+                        "on-primary-container": "#fefcff",
+                        "on-tertiary-fixed-variant": "#6f3800",
+                        "surface-tint": "#005ac1",
+                        "tertiary-fixed-dim": "#ffb780",
+                        "surface-dim": "#d8d9e3",
+                        "on-primary-fixed-variant": "#004494",
+                        "inverse-on-surface": "#eff0fa",
+                        "tertiary-container": "#b35e00",
+                        "on-surface": "#191b22",
+                        "surface-container-high": "#e7e7f1",
+                        "on-secondary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "on-secondary-fixed-variant": "#454748",
+                        "surface-container-low": "#f2f3fd",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-fixed-dim": "#c5c7c8",
+                        "on-tertiary": "#ffffff",
+                        "tertiary": "#8f4a00",
+                        "surface": "#f9f9ff",
+                        "secondary-container": "#e1e3e4",
+                        "secondary": "#5c5f60"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container-max-width": "1200px",
+                        "card-padding": "12px",
+                        "element-gap-sm": "8px",
+                        "element-gap-md": "16px",
+                        "section-gap": "24px"
+                    },
+                    "fontFamily": {
+                        "headline-lg-mobile": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "label-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "500"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #f9f9ff; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .level-1-card { background: #ffffff; box-shadow: 0 1px 3px rgba(0,0,0,0.12); border-radius: 8px; padding: 12px; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface">
+<!-- SideNavBar (Authority: JSON) -->
+<aside class="fixed left-0 top-0 h-full flex flex-col p-spacing-section-gap z-50 docked left-0 h-screen w-64 bg-surface-container-low dark:bg-surface-dim border-r border-outline-variant dark:border-outline">
+<div class="flex items-center gap-4 mb-8">
+<div class="w-10 h-10 rounded-lg bg-primary flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined">payments</span>
+</div>
+<div>
+<h1 class="font-headline-md text-headline-md font-black text-primary dark:text-primary-fixed">ProofPay</h1>
+<p class="font-label-md text-label-md text-on-surface-variant">Institutional Admin</p>
+</div>
+</div>
+<nav class="flex flex-col gap-2">
+<a class="flex items-center gap-element-gap-md text-on-surface-variant dark:text-on-secondary-container px-4 py-3 hover:bg-surface-container-high transition-all active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-element-gap-md bg-primary-container dark:bg-primary text-on-primary-container dark:text-on-primary rounded-lg px-4 py-3 active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-label-md text-label-md">Beneficiaries</span>
+</a>
+<a class="flex items-center gap-element-gap-md text-on-surface-variant dark:text-on-secondary-container px-4 py-3 hover:bg-surface-container-high transition-all active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+<span class="font-label-md text-label-md">Disbursements</span>
+</a>
+<a class="flex items-center gap-element-gap-md text-on-surface-variant dark:text-on-secondary-container px-4 py-3 hover:bg-surface-container-high transition-all active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="verified_user">verified_user</span>
+<span class="font-label-md text-label-md">Verification Hub</span>
+</a>
+<a class="flex items-center gap-element-gap-md text-on-surface-variant dark:text-on-secondary-container px-4 py-3 hover:bg-surface-container-high transition-all active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="assignment">assignment</span>
+<span class="font-label-md text-label-md">Audit Logs</span>
+</a>
+</nav>
+<div class="mt-auto pt-6 border-t border-outline-variant">
+<div class="flex items-center gap-3 px-2">
+<img alt="Admin Profile" class="w-8 h-8 rounded-full bg-surface-container-highest" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBzg_s9o6TiRwwmOt1BPS3ZWszex6kGmEKnienuKZEHz76XVm3sdGoJQ3OsK5tc7g1hgiI4RzEjkAblcyiep9skKKg4ABryVy-qnFUtiWqiA9qPKjZENCeSfA0gVqAQCmCAT_JVkXCXDKonVxu3fGXUu32ptiOt1qFDJYHgriz8IilLNeiQEcn7IbAB_9hwePOR169eosao3Zh7KQ44DxTbqSsaeRSZtK85o7QCcHC_XAIKzu0Nyl2XYYpuW7VdQcvZIg5X24rJgpI"/>
+<div class="overflow-hidden">
+<p class="font-label-md text-label-md font-bold truncate">Alex Rivera</p>
+<p class="text-[10px] text-on-surface-variant truncate">Compliance Officer</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="ml-64 min-h-screen">
+<!-- TopAppBar (Authority: JSON) -->
+<header class="flex justify-between items-center px-6 py-2 w-full max-w-[calc(100%)] bg-surface-container-lowest dark:bg-inverse-surface border-b border-outline-variant dark:border-outline shadow-sm dark:shadow-none sticky top-0 z-40">
+<div class="flex items-center gap-6">
+<h2 class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed">Beneficiaries Hub</h2>
+<div class="relative w-80">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-sm">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-surface-container-low border border-outline-variant rounded-lg text-body-sm focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none" placeholder="Search recipients by name or ID..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 rounded-full hover:bg-surface-container transition-colors relative">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="notifications">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<button class="bg-primary text-on-primary px-6 py-2 rounded-lg font-label-md text-label-md flex items-center gap-2 hover:opacity-90 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-sm">person_add</span>
+                    Invite Beneficiary
+                </button>
+</div>
+</header>
+<div class="p-8 max-w-7xl mx-auto space-y-section-gap">
+<!-- KPI Cards Bento Section -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-element-gap-md">
+<!-- KPI 1 -->
+<div class="level-1-card flex flex-col justify-between group hover:border-primary border border-transparent transition-colors">
+<div class="flex justify-between items-start">
+<div class="p-2 rounded-lg bg-primary-fixed text-on-primary-fixed">
+<span class="material-symbols-outlined">group</span>
+</div>
+<span class="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded">+12%</span>
+</div>
+<div class="mt-4">
+<p class="font-label-md text-label-md text-on-surface-variant">Total Active Beneficiaries</p>
+<h3 class="font-headline-lg text-headline-lg mt-1">1,284</h3>
+</div>
+</div>
+<!-- KPI 2 -->
+<div class="level-1-card flex flex-col justify-between group hover:border-primary border border-transparent transition-colors">
+<div class="flex justify-between items-start">
+<div class="p-2 rounded-lg bg-tertiary-fixed text-on-tertiary-fixed">
+<span class="material-symbols-outlined">pending_actions</span>
+</div>
+<span class="text-xs font-bold text-tertiary bg-tertiary-fixed/30 px-2 py-1 rounded">4 Pending</span>
+</div>
+<div class="mt-4">
+<p class="font-label-md text-label-md text-on-surface-variant">Pending Verification</p>
+<h3 class="font-headline-lg text-headline-lg mt-1">42</h3>
+</div>
+</div>
+<!-- KPI 3 -->
+<div class="level-1-card flex flex-col justify-between group hover:border-error border border-transparent transition-colors">
+<div class="flex justify-between items-start">
+<div class="p-2 rounded-lg bg-error-container text-on-error-container">
+<span class="material-symbols-outlined">flag</span>
+</div>
+<span class="text-xs font-bold text-error bg-error-container px-2 py-1 rounded">Urgent</span>
+</div>
+<div class="mt-4">
+<p class="font-label-md text-label-md text-on-surface-variant">Compliance Flags</p>
+<h3 class="font-headline-lg text-headline-lg mt-1">7</h3>
+</div>
+</div>
+</div>
+<!-- Filters & Actions -->
+<div class="flex flex-wrap items-center justify-between gap-4">
+<div class="flex items-center gap-2">
+<button class="flex items-center gap-2 px-4 py-2 bg-surface-container-highest rounded-lg text-body-sm font-medium hover:bg-primary-fixed transition-colors">
+<span class="material-symbols-outlined text-sm">filter_alt</span>
+                        Filters
+                    </button>
+<div class="h-6 w-[1px] bg-outline-variant"></div>
+<span class="text-label-md font-label-md text-on-surface-variant">Active Filters:</span>
+<div class="flex gap-2">
+<span class="bg-primary-container text-on-primary-container text-[10px] px-3 py-1 rounded-full flex items-center gap-1">
+                            Status: Verified
+                            <span class="material-symbols-outlined text-[10px] cursor-pointer">close</span>
+</span>
+</div>
+</div>
+<button class="flex items-center gap-2 px-4 py-2 text-primary font-medium text-body-sm hover:bg-primary-fixed/30 rounded-lg transition-all">
+<span class="material-symbols-outlined text-sm">file_download</span>
+                    Export CSV
+                </button>
+</div>
+<!-- Detailed Data Table -->
+<div class="level-1-card overflow-hidden !p-0">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low border-b border-outline-variant">
+<th class="px-6 py-4 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Name</th>
+<th class="px-6 py-4 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Entity</th>
+<th class="px-6 py-4 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Reference ID</th>
+<th class="px-6 py-4 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Verification Status</th>
+<th class="px-6 py-4 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Last Payout</th>
+<th class="px-6 py-4 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-surface-variant flex items-center justify-center font-bold text-primary text-xs">AM</div>
+<div>
+<p class="font-body-sm font-semibold">Arjun Mehta</p>
+<p class="text-[11px] text-on-surface-variant">arjun.m@fintech-inc.com</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 font-body-sm">Individual Contractor</td>
+<td class="px-6 py-4 font-mono text-[12px] text-on-surface-variant">PP-49210-XC</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold">
+<span class="material-symbols-outlined text-[12px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                                        Verified
+                                    </span>
+</td>
+<td class="px-6 py-4">
+<p class="font-body-sm">Oct 24, 2023</p>
+<p class="text-[11px] text-on-surface-variant">$4,200.00</p>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="p-2 hover:bg-surface-container-highest rounded-full transition-all">
+<span class="material-symbols-outlined text-secondary">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-primary-fixed flex items-center justify-center font-bold text-primary text-xs">SL</div>
+<div>
+<p class="font-body-sm font-semibold">Starlight Logistics</p>
+<p class="text-[11px] text-on-surface-variant">billing@starlight.io</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 font-body-sm">Corporate Entity</td>
+<td class="px-6 py-4 font-mono text-[12px] text-on-surface-variant">PP-99023-LL</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-tertiary-fixed text-on-tertiary-fixed-variant text-[10px] font-bold">
+<span class="material-symbols-outlined text-[12px]">schedule</span>
+                                        Pending Review
+                                    </span>
+</td>
+<td class="px-6 py-4">
+<p class="font-body-sm">--</p>
+<p class="text-[11px] text-on-surface-variant">No history</p>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="p-2 hover:bg-surface-container-highest rounded-full transition-all">
+<span class="material-symbols-outlined text-secondary">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-error-container flex items-center justify-center font-bold text-error text-xs">JD</div>
+<div>
+<p class="font-body-sm font-semibold">Julianna D'Arcy</p>
+<p class="text-[11px] text-on-surface-variant">j.darcy@global.net</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 font-body-sm">Individual Contractor</td>
+<td class="px-6 py-4 font-mono text-[12px] text-on-surface-variant">PP-11204-AQ</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-error-container text-error text-[10px] font-bold">
+<span class="material-symbols-outlined text-[12px]">warning</span>
+                                        Action Required
+                                    </span>
+</td>
+<td class="px-6 py-4">
+<p class="font-body-sm">Sep 12, 2023</p>
+<p class="text-[11px] text-on-surface-variant">$1,850.00</p>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="p-2 hover:bg-surface-container-highest rounded-full transition-all">
+<span class="material-symbols-outlined text-secondary">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-surface-variant flex items-center justify-center font-bold text-primary text-xs">VC</div>
+<div>
+<p class="font-body-sm font-semibold">Vertex Creative</p>
+<p class="text-[11px] text-on-surface-variant">contact@vertex.com</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 font-body-sm">Corporate Entity</td>
+<td class="px-6 py-4 font-mono text-[12px] text-on-surface-variant">PP-55231-RT</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold">
+<span class="material-symbols-outlined text-[12px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                                        Verified
+                                    </span>
+</td>
+<td class="px-6 py-4">
+<p class="font-body-sm">Oct 20, 2023</p>
+<p class="text-[11px] text-on-surface-variant">$12,400.00</p>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="p-2 hover:bg-surface-container-highest rounded-full transition-all">
+<span class="material-symbols-outlined text-secondary">more_vert</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination -->
+<div class="px-6 py-4 bg-surface-container-lowest border-t border-outline-variant flex items-center justify-between">
+<p class="text-label-md text-on-surface-variant">Showing 1 to 4 of 1,284 recipients</p>
+<div class="flex gap-2">
+<button class="px-4 py-2 border border-outline-variant rounded-lg text-body-sm font-medium hover:bg-surface-container transition-colors disabled:opacity-50" disabled="">Previous</button>
+<button class="px-4 py-2 bg-primary text-on-primary rounded-lg text-body-sm font-medium hover:opacity-90">Next</button>
+</div>
+</div>
+</div>
+<!-- Async Verification Progress (Asymmetric Sidebar-like card) -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-section-gap">
+<div class="lg:col-span-8">
+<div class="level-1-card h-full">
+<div class="flex items-center justify-between mb-6">
+<h4 class="font-headline-md text-headline-md">Verification Trends</h4>
+<select class="bg-transparent border-none text-label-md text-on-surface-variant focus:ring-0 cursor-pointer">
+<option>Last 30 Days</option>
+<option>Last 90 Days</option>
+</select>
+</div>
+<div class="h-48 w-full bg-surface-container-low rounded-lg flex items-end justify-between p-4 gap-2">
+<div class="w-full bg-primary-container/20 rounded-t-sm h-[40%]"></div>
+<div class="w-full bg-primary-container/20 rounded-t-sm h-[55%]"></div>
+<div class="w-full bg-primary-container/20 rounded-t-sm h-[45%]"></div>
+<div class="w-full bg-primary-container/20 rounded-t-sm h-[70%]"></div>
+<div class="w-full bg-primary-container/20 rounded-t-sm h-[65%]"></div>
+<div class="w-full bg-primary-container/20 rounded-t-sm h-[85%]"></div>
+<div class="w-full bg-primary rounded-t-sm h-[95%]"></div>
+</div>
+<p class="mt-4 text-body-sm text-on-surface-variant">KYC completion rate has increased by 14% since the new verification module was implemented.</p>
+</div>
+</div>
+<div class="lg:col-span-4">
+<div class="level-1-card h-full bg-primary text-on-primary flex flex-col justify-center text-center p-8 overflow-hidden relative">
+<!-- Abstract Background Texture -->
+<div class="absolute inset-0 opacity-10 pointer-events-none">
+<svg class="h-full w-full" preserveaspectratio="none" viewbox="0 0 100 100">
+<circle cx="50" cy="50" fill="white" r="50"></circle>
+</svg>
+</div>
+<span class="material-symbols-outlined text-4xl mb-4 relative z-10" style="font-variation-settings: 'FILL' 1;">security</span>
+<h4 class="font-headline-md text-headline-md font-bold mb-2 relative z-10">Compliance Integrity</h4>
+<p class="text-body-sm text-primary-fixed mb-6 relative z-10">Our automated checks ensure 99.9% accuracy across global watchlists and AML databases.</p>
+<button class="w-full py-3 bg-on-primary text-primary rounded-lg font-bold hover:bg-primary-fixed transition-all active:scale-95 relative z-10">Run Audit Report</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

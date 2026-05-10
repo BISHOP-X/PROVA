@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Beneficiaries - ProofPay</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed-dim": "#bcc7de",
+                        "surface-dim": "#051424",
+                        "on-primary-fixed-variant": "#0035be",
+                        "inverse-on-surface": "#233143",
+                        "tertiary-container": "#626d82",
+                        "on-surface": "#d4e4fa",
+                        "surface-container-high": "#1c2b3c",
+                        "surface-variant": "#273647",
+                        "on-tertiary-fixed-variant": "#3c475a",
+                        "on-primary-container": "#efefff",
+                        "surface-tint": "#b8c3ff",
+                        "surface-container-lowest": "#010f1f",
+                        "secondary-fixed-dim": "#bec6e0",
+                        "on-tertiary": "#263143",
+                        "tertiary": "#bcc7de",
+                        "surface": "#051424",
+                        "secondary-container": "#3f465c",
+                        "secondary": "#bec6e0",
+                        "on-secondary": "#283044",
+                        "on-secondary-fixed-variant": "#3f465c",
+                        "on-error-container": "#ffdad6",
+                        "surface-container-low": "#0d1c2d",
+                        "secondary-fixed": "#dae2fd",
+                        "on-secondary-fixed": "#131b2e",
+                        "inverse-surface": "#d4e4fa",
+                        "surface-container-highest": "#273647",
+                        "outline": "#8e90a2",
+                        "surface-container": "#122131",
+                        "primary-fixed": "#dde1ff",
+                        "primary-container": "#2e5bff",
+                        "primary": "#b8c3ff",
+                        "outline-variant": "#434656",
+                        "on-secondary-container": "#adb4ce",
+                        "error-container": "#93000a",
+                        "tertiary-fixed": "#d8e3fb",
+                        "surface-bright": "#2c3a4c",
+                        "on-primary-fixed": "#001356",
+                        "on-background": "#d4e4fa",
+                        "on-surface-variant": "#c4c5d9",
+                        "on-error": "#690005",
+                        "on-tertiary-container": "#eaefff",
+                        "background": "#051424",
+                        "error": "#ffb4ab",
+                        "on-tertiary-fixed": "#111c2d",
+                        "primary-fixed-dim": "#b8c3ff",
+                        "on-primary": "#002388",
+                        "inverse-primary": "#124af0"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-desktop": "40px",
+                        "container-max": "1440px",
+                        "gutter": "24px",
+                        "unit": "4px",
+                        "margin-mobile": "16px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Inter"],
+                        "label-md": ["Inter"],
+                        "title-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "data-mono": ["JetBrains Mono"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "title-lg": ["20px", {"lineHeight": "28px", "fontWeight": "500"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "data-mono": ["14px", {"lineHeight": "20px", "fontWeight": "500"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: theme('colors.background');
+            color: theme('colors.on-background');
+        }
+    </style>
+</head>
+<body class="font-body-md text-body-md antialiased overflow-x-hidden selection:bg-primary-container selection:text-on-primary-container">
+<!-- SideNavBar Component -->
+<nav class="h-screen w-64 fixed left-0 top-0 flex flex-col gap-2 py-6 px-4 bg-surface-container-low border-r border-outline-variant/10 shadow-sm z-50">
+<!-- Brand Header -->
+<div class="flex items-center gap-3 px-4 mb-8">
+<div class="w-10 h-10 rounded-lg bg-primary-container flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-on-primary-container" style="font-variation-settings: 'FILL' 1;">account_balance</span>
+</div>
+<div class="flex flex-col">
+<span class="text-headline-md font-headline-md font-bold text-primary tracking-tight">ProofPay</span>
+<span class="font-label-md text-label-md text-on-surface-variant">Institutional Admin</span>
+</div>
+</div>
+<!-- Navigation Links -->
+<div class="flex flex-col gap-1 flex-1">
+<a class="flex items-center gap-4 px-4 py-3 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest transition-colors duration-200 active:scale-95" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-title-lg text-title-lg">Dashboard</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 rounded-lg text-primary font-bold border-r-2 border-primary bg-primary-container/10 transition-colors duration-200 active:scale-95" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">group</span>
+<span class="font-title-lg text-title-lg">Beneficiaries</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest transition-colors duration-200 active:scale-95" href="#">
+<span class="material-symbols-outlined">payments</span>
+<span class="font-title-lg text-title-lg">Disbursements</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest transition-colors duration-200 active:scale-95" href="#">
+<span class="material-symbols-outlined">verified_user</span>
+<span class="font-title-lg text-title-lg">Verification Hub</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest transition-colors duration-200 active:scale-95" href="#">
+<span class="material-symbols-outlined">history_edu</span>
+<span class="font-title-lg text-title-lg">Audit Logs</span>
+</a>
+</div>
+</nav>
+<!-- TopAppBar Component -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] h-16 flex items-center justify-between px-gutter bg-surface/60 backdrop-blur-xl border-b border-white/5 shadow-sm z-40">
+<!-- Search Bar (Left) -->
+<div class="relative w-96 flex items-center focus-within:ring-2 focus-within:ring-primary/50 rounded-lg">
+<span class="material-symbols-outlined absolute left-3 text-on-surface-variant">search</span>
+<input class="w-full bg-surface-container-high border-none text-on-surface font-body-md text-body-md placeholder:text-on-surface-variant py-2 pl-10 pr-4 rounded-lg focus:ring-0" placeholder="Search beneficiaries, IDs, or transactions..." type="text"/>
+</div>
+<!-- Trailing Icons -->
+<div class="flex items-center gap-2">
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-high rounded-full transition-all">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-high rounded-full transition-all">
+<span class="material-symbols-outlined">help_outline</span>
+</button>
+<button class="w-8 h-8 rounded-full bg-surface-container-highest border border-outline-variant/30 flex items-center justify-center overflow-hidden hover:bg-surface-container-high transition-all">
+<img alt="Admin User Avatar" class="w-full h-full object-cover" data-alt="A professional headshot of a corporate administrator in a dark, sleek office environment, lit by soft rim lighting to convey authority and trust." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB8DKfnybo6e542AJzYtcc4KcL95KNh6qpNR4p5_zlCS4eCz6F740jI5MZ9CfqWKKtN5pFCzJhlJebptlmS4inbsnSohlTcL_WZMJHIo3s1sP7Rd9I22kp4wnpuIjXjiWGgee-m_crB8UsOdUL_7Mxg4ez0UGEy_jdpLSGFoAVfH_8Yuav463m50n6t5i5AtPM51Mid7DLfzZTeJGFiHGip-1LsN5mh9oFT7C5yqt2CA43K-jq7kEk5JoGktqVr56HYlUzHzKtbbAE"/>
+</button>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-64 mt-16 p-margin-desktop max-w-container-max mx-auto">
+<!-- Page Header -->
+<div class="flex items-center justify-between mb-8">
+<div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface">Beneficiaries</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant mt-1">Manage, verify, and execute payouts for registered recipients.</p>
+</div>
+<button class="flex items-center gap-2 bg-primary-container text-on-primary-container hover:bg-primary hover:text-on-primary font-label-md text-label-md px-6 py-3 rounded-lg transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[18px]">person_add</span>
+                Invite Beneficiary
+            </button>
+</div>
+<!-- Controls / Filters Toolbar -->
+<div class="flex items-center gap-4 mb-6">
+<div class="flex items-center gap-2 bg-surface-container-high rounded-lg p-1 border border-outline-variant/20">
+<button class="px-4 py-1.5 rounded bg-surface-variant text-on-surface font-label-md text-label-md shadow-sm">All</button>
+<button class="px-4 py-1.5 rounded text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-colors">Verified</button>
+<button class="px-4 py-1.5 rounded text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-colors">Pending</button>
+<button class="px-4 py-1.5 rounded text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-colors flex items-center gap-1">
+                    Flagged <span class="w-2 h-2 rounded-full bg-error"></span>
+</button>
+</div>
+<div class="h-6 w-px bg-outline-variant/30"></div>
+<button class="flex items-center gap-2 text-on-surface-variant hover:text-on-surface font-label-md text-label-md px-3 py-2 rounded border border-transparent hover:border-outline-variant/30 transition-all">
+<span class="material-symbols-outlined text-[18px]">filter_list</span>
+                More Filters
+            </button>
+</div>
+<!-- High-Density Data Table Card -->
+<div class="bg-surface-variant rounded-xl border border-outline-variant/30 shadow-sm overflow-hidden flex flex-col relative">
+<!-- Glassmorphism subtle overlay for depth -->
+<div class="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent pointer-events-none"></div>
+<div class="overflow-x-auto relative z-10">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-highest border-b border-outline-variant/20">
+<th class="py-3 px-4 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider w-[35%]">Name &amp; Contact</th>
+<th class="py-3 px-4 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider w-[20%]">Beneficiary ID</th>
+<th class="py-3 px-4 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider w-[20%]">Verification Status</th>
+<th class="py-3 px-4 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider w-[15%]">Last Payout</th>
+<th class="py-3 px-4 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider text-right w-[10%]">Actions</th>
+</tr>
+</thead>
+<tbody class="font-body-md text-body-md">
+<!-- Row 1: Verified -->
+<tr class="border-b border-outline-variant/10 hover:bg-surface-container transition-colors group">
+<td class="py-3 px-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-primary-container/20 border border-primary/20 flex items-center justify-center text-primary font-bold text-xs">
+                                        EJ
+                                    </div>
+<div class="flex flex-col">
+<span class="text-on-surface font-medium group-hover:text-primary transition-colors">Elena Jenkins</span>
+<span class="text-on-surface-variant text-[12px]">elena.j@example.com</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-4">
+<span class="font-data-mono text-data-mono text-on-surface-variant tracking-tight">BNF-8829-XJ</span>
+</td>
+<td class="py-3 px-4">
+<div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-primary-container/10 border border-primary/20 text-primary-fixed">
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="font-label-md text-[11px] uppercase tracking-wider">Verified</span>
+</div>
+</td>
+<td class="py-3 px-4">
+<span class="text-on-surface">$4,250.00</span>
+<div class="text-on-surface-variant text-[12px]">Oct 12, 2023</div>
+</td>
+<td class="py-3 px-4 text-right">
+<button class="p-1.5 text-on-surface-variant hover:text-primary hover:bg-primary-container/10 rounded transition-colors" title="View Profile">
+<span class="material-symbols-outlined text-[20px]">chevron_right</span>
+</button>
+</td>
+</tr>
+<!-- Row 2: Pending -->
+<tr class="border-b border-outline-variant/10 hover:bg-surface-container transition-colors group">
+<td class="py-3 px-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-tertiary-container/20 border border-tertiary/20 flex items-center justify-center text-tertiary font-bold text-xs">
+                                        MC
+                                    </div>
+<div class="flex flex-col">
+<span class="text-on-surface font-medium group-hover:text-primary transition-colors">Marcus Chen</span>
+<span class="text-on-surface-variant text-[12px]">m.chen@logistics.net</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-4">
+<span class="font-data-mono text-data-mono text-on-surface-variant tracking-tight">BNF-4410-MC</span>
+</td>
+<td class="py-3 px-4">
+<div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-tertiary-container/10 border border-tertiary/20 text-tertiary-fixed">
+<span class="material-symbols-outlined text-[14px]">pending</span>
+<span class="font-label-md text-[11px] uppercase tracking-wider">Pending KYC</span>
+</div>
+</td>
+<td class="py-3 px-4">
+<span class="text-on-surface-variant italic text-[13px]">No history</span>
+</td>
+<td class="py-3 px-4 text-right">
+<button class="p-1.5 text-on-surface-variant hover:text-primary hover:bg-primary-container/10 rounded transition-colors" title="View Profile">
+<span class="material-symbols-outlined text-[20px]">chevron_right</span>
+</button>
+</td>
+</tr>
+<!-- Row 3: Flagged -->
+<tr class="border-b border-outline-variant/10 hover:bg-surface-container transition-colors group bg-error-container/5">
+<td class="py-3 px-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-surface-container border border-outline-variant/30 overflow-hidden flex items-center justify-center">
+<img alt="Avatar" class="w-full h-full object-cover opacity-80" data-alt="A slightly blurred, desaturated profile photo of a user to indicate a suspended or flagged account status in the system." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCmnnpozv3ZxcBtO5OodRsz7AbRECjTkGDWivOFNbd5-H0kM5ef4b6lPBo1AWTpw35z3TOGxIfNpCcmixBpLYkfikcKJ28xsnFon5IgPDG4QQNkoRzCFcCTVPHVjpIoyS_9VUPctZzGPCswUrl5R603ZrUtDW3rjBFP8CHBNytg-eUJKpVOZVI-4imskkJhf6yTI3oSYUa_cv5EG-M68YsMym7Dy2nzTmDz1qnRBllUnCbj_6FOHIf3FTgOW350FhP7OvYDZHasBOc"/>
+</div>
+<div class="flex flex-col">
+<span class="text-on-surface font-medium group-hover:text-primary transition-colors">Sarah O'Connor</span>
+<span class="text-on-surface-variant text-[12px]">s.oconnor@global.io</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-4">
+<span class="font-data-mono text-data-mono text-on-surface-variant tracking-tight">BNF-9912-SO</span>
+</td>
+<td class="py-3 px-4">
+<div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-error-container/20 border border-error/30 text-error">
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">warning</span>
+<span class="font-label-md text-[11px] uppercase tracking-wider">Action Req.</span>
+</div>
+</td>
+<td class="py-3 px-4">
+<span class="text-on-surface">$1,100.00</span>
+<div class="text-on-surface-variant text-[12px]">Sep 28, 2023</div>
+</td>
+<td class="py-3 px-4 text-right">
+<button class="p-1.5 text-on-surface-variant hover:text-primary hover:bg-primary-container/10 rounded transition-colors" title="View Profile">
+<span class="material-symbols-outlined text-[20px]">chevron_right</span>
+</button>
+</td>
+</tr>
+<!-- Row 4: Verified -->
+<tr class="hover:bg-surface-container transition-colors group">
+<td class="py-3 px-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-primary-container/20 border border-primary/20 flex items-center justify-center text-primary font-bold text-xs">
+                                        TR
+                                    </div>
+<div class="flex flex-col">
+<span class="text-on-surface font-medium group-hover:text-primary transition-colors">TechResolve Inc.</span>
+<span class="text-on-surface-variant text-[12px]">billing@techresolve.com</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-4">
+<span class="font-data-mono text-data-mono text-on-surface-variant tracking-tight">BNF-1002-TR</span>
+</td>
+<td class="py-3 px-4">
+<div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-primary-container/10 border border-primary/20 text-primary-fixed">
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="font-label-md text-[11px] uppercase tracking-wider">Verified</span>
+</div>
+</td>
+<td class="py-3 px-4">
+<span class="text-on-surface">$12,450.00</span>
+<div class="text-on-surface-variant text-[12px]">Oct 15, 2023</div>
+</td>
+<td class="py-3 px-4 text-right">
+<button class="p-1.5 text-on-surface-variant hover:text-primary hover:bg-primary-container/10 rounded transition-colors" title="View Profile">
+<span class="material-symbols-outlined text-[20px]">chevron_right</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Table Footer / Pagination -->
+<div class="bg-surface-container-highest px-4 py-3 border-t border-outline-variant/20 flex items-center justify-between">
+<span class="text-on-surface-variant font-body-md text-body-md text-[13px]">Showing 1 to 4 of 248 entries</span>
+<div class="flex items-center gap-1">
+<button class="w-8 h-8 flex items-center justify-center rounded text-on-surface-variant hover:bg-surface-variant hover:text-on-surface disabled:opacity-50" disabled="">
+<span class="material-symbols-outlined text-[18px]">chevron_left</span>
+</button>
+<button class="w-8 h-8 flex items-center justify-center rounded bg-primary-container/20 text-primary font-medium text-[13px] border border-primary/20">1</button>
+<button class="w-8 h-8 flex items-center justify-center rounded text-on-surface-variant hover:bg-surface-variant hover:text-on-surface font-medium text-[13px]">2</button>
+<button class="w-8 h-8 flex items-center justify-center rounded text-on-surface-variant hover:bg-surface-variant hover:text-on-surface font-medium text-[13px]">3</button>
+<span class="w-8 h-8 flex items-center justify-center text-on-surface-variant text-[13px]">...</span>
+<button class="w-8 h-8 flex items-center justify-center rounded text-on-surface-variant hover:bg-surface-variant hover:text-on-surface">
+<span class="material-symbols-outlined text-[18px]">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+</body></html>
