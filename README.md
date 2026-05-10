@@ -176,6 +176,23 @@ Render is optional for MVP, but useful if we later need:
 
 For hackathon speed, a Supabase-first backend is the right default.
 
+## Current Project Structure
+
+This first iteration is intentionally minimal. It exists to make the team structure clear before feature work starts.
+
+- `src/components/layout` contains shared layout primitives such as the app shell.
+- `src/pages` contains top-level screens while the app is still small.
+- `supabase/functions` is reserved for Edge Functions that will handle Squad and AI orchestration.
+- `README.md` and `ARCHITECTURE.md` remain the source of truth for product scope and system direction.
+
+### First Iteration Goal
+
+- clean root project scaffold
+- working React + TypeScript + Vite app
+- Tailwind wired in
+- minimal placeholder UI for teammates to inspect
+- Supabase folder reserved for backend work
+
 ## Demo Story
 
 The live demo should be one simple story:
