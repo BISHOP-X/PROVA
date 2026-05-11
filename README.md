@@ -184,6 +184,7 @@ This first iteration is intentionally minimal. It exists to make the team struct
 - `src/pages` contains top-level screens while the app is still small.
 - `supabase/functions` is reserved for Edge Functions that will handle Squad and AI orchestration.
 - `README.md` and `ARCHITECTURE.md` remain the source of truth for product scope and system direction.
+- `PLAN.md` is the source of truth for delivery phases, ownership, and merge discipline.
 
 ### First Iteration Goal
 
