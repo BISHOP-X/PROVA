@@ -1,47 +1,7 @@
-import { TrendingUp, AlertTriangle, CheckCircle2, Users } from 'lucide-react';
-
-// ── Metric card data ──────────────────────────────────────────────
-const metrics = [
-  {
-    label: 'Total Disbursed (MTD)',
-    value: '$14.2M',
-    sub: '+12.4% vs last mo',
-    subColor: 'text-green-600',
-    icon: TrendingUp,
-    iconColor: 'text-[#0058bd]',
-  },
-  {
-    label: 'Pending Verifications',
-    value: '142',
-    badge: '24 High Risk',
-    badgeBg: 'bg-[#ffdad6] text-[#93000a]',
-    icon: AlertTriangle,
-    iconColor: 'text-[#ba1a1a]',
-  },
-  {
-    label: 'System Trust Score',
-    value: '94%',
-    sub: 'Excellent Performance',
-    subColor: 'text-[#0058bd] font-bold',
-    icon: CheckCircle2,
-    iconColor: 'text-[#0058bd]',
-  },
-  {
-    label: 'Active Beneficiaries',
-    value: '1,248',
-    sub: '+12% this month',
-    subColor: 'text-[#0058bd]',
-    icon: Users,
-    iconColor: 'text-[#0058bd]',
-  },
-];
-
-// ── Verification queue rows ───────────────────────────────────────
-const queue = [
-  { name: 'Acme Corp Solutions', type: 'Vendor Payment', risk: 'Low', time: '2 hours ago' },
-  { name: 'Jonathan Doe', type: 'Education Stipend', risk: 'Medium', time: '5 hours ago' },
-  { name: 'Global Relief NGO', type: 'Grant Disbursement', risk: 'High', time: '6 hours ago' },
-];
+import { useQuery } from '@tanstack/react-query';
+import { AlertTriangle, CheckCircle2, TrendingUp, Users } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { getAdminDashboard } from '@/lib/api';
 
 const riskBadge: Record<string, string> = {
   Low: 'bg-green-100 text-green-800',
@@ -66,8 +26,56 @@ const months = [
 ];
 
 export function HomePage() {
+  const { data, error, isError, isLoading } = useQuery({
+    queryKey: ['admin-dashboard'],
+    queryFn: getAdminDashboard,
+  });
+
+  const metrics = [
+    {
+      label: 'Total Beneficiaries',
+      value: data ? new Intl.NumberFormat('en-US').format(data.metrics.totalBeneficiaries) : '--',
+      sub: 'Live records in the PROVA ledger',
+      subColor: 'text-[#0058bd]',
+      icon: Users,
+      iconColor: 'text-[#0058bd]',
+    },
+    {
+      label: 'Pending Verifications',
+      value: data ? new Intl.NumberFormat('en-US').format(data.metrics.pendingVerifications) : '--',
+      badge: data ? `${data.recentQueue.filter((item) => item.risk === 'High').length} High Risk` : 'Syncing',
+      badgeBg: 'bg-[#ffdad6] text-[#93000a]',
+      icon: AlertTriangle,
+      iconColor: 'text-[#ba1a1a]',
+    },
+    {
+      label: 'System Trust Score',
+      value: data ? `${data.metrics.trustScore}%` : '--',
+      sub: data?.metrics.trustScore ? 'Derived from latest verification decisions' : 'No completed checks yet',
+      subColor: 'text-[#0058bd] font-bold',
+      icon: CheckCircle2,
+      iconColor: 'text-[#0058bd]',
+    },
+    {
+      label: 'Active Programs',
+      value: data ? new Intl.NumberFormat('en-US').format(data.metrics.activePrograms) : '--',
+      sub: data ? `${data.metrics.approvedBeneficiaries} beneficiaries approved` : 'Waiting for first program',
+      subColor: 'text-[#0058bd]',
+      icon: TrendingUp,
+      iconColor: 'text-[#0058bd]',
+    },
+  ];
+
+  const queue = data?.recentQueue ?? [];
+
   return (
     <>
+      {isError ? (
+        <section className="rounded-lg border border-[#ffdad6] bg-[#fff8f7] px-4 py-3 text-[14px] text-[#93000a]">
+          Live dashboard data could not be loaded: {error.message}
+        </section>
+      ) : null}
+
       {/* ── MOBILE HERO GREETING (hidden on md+) ────────────────────── */}
       <div className="md:hidden -mx-4 -mt-4 mb-2 bg-[#0058bd] text-white px-6 pt-6 pb-8 relative overflow-hidden">
         {/* Decorative circles */}
@@ -75,25 +83,27 @@ export function HomePage() {
         <div className="absolute top-4 right-16 w-20 h-20 rounded-full bg-white/5" />
         <p className="text-[12px] font-semibold tracking-[0.08em] uppercase text-white/70 mb-1 relative z-10">PROVA Admin</p>
         <h1 className="text-[24px] font-bold leading-8 tracking-[-0.01em] relative z-10">Good morning, Director</h1>
-        <p className="text-[14px] text-white/80 mt-1 relative z-10">Here is your verification overview for today.</p>
+        <p className="text-[14px] text-white/80 mt-1 relative z-10">
+          {isLoading ? 'Syncing live verification activity...' : 'Here is your live verification overview for today.'}
+        </p>
 
         {/* Mobile summary chips */}
         <div className="grid grid-cols-2 gap-3 mt-6 relative z-10">
           <div className="bg-white/15 rounded-xl p-3 backdrop-blur-sm">
             <p className="text-[10px] font-semibold text-white/70 uppercase tracking-wider">Total Disbursed</p>
-            <p className="text-[20px] font-bold text-white">$4.2M</p>
+            <p className="text-[20px] font-bold text-white">{metrics[0].value}</p>
           </div>
           <div className="bg-white/15 rounded-xl p-3 backdrop-blur-sm">
             <p className="text-[10px] font-semibold text-white/70 uppercase tracking-wider">Pending</p>
-            <p className="text-[20px] font-bold text-white">142</p>
+            <p className="text-[20px] font-bold text-white">{metrics[1].value}</p>
           </div>
           <div className="bg-white/15 rounded-xl p-3 backdrop-blur-sm">
             <p className="text-[10px] font-semibold text-white/70 uppercase tracking-wider">Trust Score</p>
-            <p className="text-[20px] font-bold text-white">Elite</p>
+            <p className="text-[20px] font-bold text-white">{metrics[2].value}</p>
           </div>
           <div className="bg-white/15 rounded-xl p-3 backdrop-blur-sm">
-            <p className="text-[10px] font-semibold text-white/70 uppercase tracking-wider">Active</p>
-            <p className="text-[20px] font-bold text-white">1,248</p>
+            <p className="text-[10px] font-semibold text-white/70 uppercase tracking-wider">Programs</p>
+            <p className="text-[20px] font-bold text-white">{metrics[3].value}</p>
           </div>
         </div>
       </div>
@@ -246,65 +256,84 @@ export function HomePage() {
           <h2 className="text-[20px] font-medium leading-7 text-[#191b22]">
             Recent Verification Queue
           </h2>
-          <button className="text-[#0058bd] font-bold text-[12px] tracking-[0.05em] hover:underline">
+          <Link className="text-[#0058bd] font-bold text-[12px] tracking-[0.05em] hover:underline" to="/beneficiaries">
             View All Records
-          </button>
+          </Link>
         </div>
 
-        {/* Desktop: Table */}
-        <div className="hidden md:block overflow-x-auto">
-          <table className="w-full text-left">
-            <thead>
-              <tr className="text-[12px] font-bold tracking-[0.05em] text-[#424753] border-b border-[#c2c6d5]">
-                <th className="pb-4">BENEFICIARY</th>
-                <th className="pb-4">TYPE</th>
-                <th className="pb-4">RISK LEVEL</th>
-                <th className="pb-4">SUBMITTED</th>
-                <th className="pb-4">ACTION</th>
-              </tr>
-            </thead>
-            <tbody>
+        {isLoading ? (
+          <div className="rounded-lg border border-dashed border-[#c2c6d5] bg-[#f9f9ff] px-4 py-8 text-center text-[14px] text-[#424753]">
+            Loading the latest verification queue from your live project...
+          </div>
+        ) : queue.length ? (
+          <>
+            <div className="hidden md:block overflow-x-auto">
+              <table className="w-full text-left">
+                <thead>
+                  <tr className="text-[12px] font-bold tracking-[0.05em] text-[#424753] border-b border-[#c2c6d5]">
+                    <th className="pb-4">BENEFICIARY</th>
+                    <th className="pb-4">TYPE</th>
+                    <th className="pb-4">RISK LEVEL</th>
+                    <th className="pb-4">SUBMITTED</th>
+                    <th className="pb-4">ACTION</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {queue.map((row) => (
+                    <tr key={row.id} className="border-b border-[#c2c6d5] hover:bg-[#f2f3fd] transition-colors">
+                      <td className="py-4">
+                        <p className="font-bold text-[14px] text-[#191b22]">{row.name}</p>
+                        <p className="text-[12px] text-[#424753] mt-0.5">Ref: {row.referenceId}</p>
+                      </td>
+                      <td className="py-4 text-[14px] text-[#424753]">{row.type}</td>
+                      <td className="py-4">
+                        <span className={`px-2 py-0.5 rounded-full text-[11px] font-bold ${riskBadge[row.risk]}`}>
+                          {row.risk} Risk
+                        </span>
+                      </td>
+                      <td className="py-4 text-[14px] text-[#424753]">{row.time}</td>
+                      <td className="py-4">
+                        <Link
+                          className="inline-flex px-3 py-1 bg-[#0058bd] text-white rounded-lg font-bold text-[11px] hover:opacity-90 transition-opacity"
+                          to={`/status?applicationId=${row.id}`}
+                        >
+                          View Status
+                        </Link>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <div className="md:hidden flex flex-col gap-3">
               {queue.map((row) => (
-                <tr key={row.name} className="border-b border-[#c2c6d5] hover:bg-[#f2f3fd] transition-colors">
-                  <td className="py-4 font-bold text-[14px] text-[#191b22]">{row.name}</td>
-                  <td className="py-4 text-[14px] text-[#424753]">{row.type}</td>
-                  <td className="py-4">
-                    <span className={`px-2 py-0.5 rounded-full text-[11px] font-bold ${riskBadge[row.risk]}`}>
+                <div
+                  key={row.id}
+                  className="flex items-center justify-between p-4 rounded-lg border border-[#c2c6d5] bg-[#f9f9ff]"
+                >
+                  <div>
+                    <p className="font-bold text-[14px] text-[#191b22]">{row.name}</p>
+                    <p className="text-[12px] text-[#424753] mt-0.5">{row.type} · {row.time}</p>
+                    <span className={`mt-2 inline-block px-2 py-0.5 rounded-full text-[10px] font-bold ${riskBadge[row.risk]}`}>
                       {row.risk} Risk
                     </span>
-                  </td>
-                  <td className="py-4 text-[14px] text-[#424753]">{row.time}</td>
-                  <td className="py-4">
-                    <button className="px-3 py-1 bg-[#0058bd] text-white rounded-lg font-bold text-[11px] hover:opacity-90 transition-opacity">
-                      Verify
-                    </button>
-                  </td>
-                </tr>
+                  </div>
+                  <Link
+                    className="px-4 py-2 bg-[#0058bd] text-white rounded-lg font-bold text-[12px] shrink-0 ml-3"
+                    to={`/status?applicationId=${row.id}`}
+                  >
+                    Track
+                  </Link>
+                </div>
               ))}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Mobile: Card stack */}
-        <div className="md:hidden flex flex-col gap-3">
-          {queue.map((row) => (
-            <div
-              key={row.name}
-              className="flex items-center justify-between p-4 rounded-lg border border-[#c2c6d5] bg-[#f9f9ff]"
-            >
-              <div>
-                <p className="font-bold text-[14px] text-[#191b22]">{row.name}</p>
-                <p className="text-[12px] text-[#424753] mt-0.5">{row.type} · {row.time}</p>
-                <span className={`mt-2 inline-block px-2 py-0.5 rounded-full text-[10px] font-bold ${riskBadge[row.risk]}`}>
-                  {row.risk} Risk
-                </span>
-              </div>
-              <button className="px-4 py-2 bg-[#0058bd] text-white rounded-lg font-bold text-[12px] shrink-0 ml-3">
-                Verify
-              </button>
             </div>
-          ))}
-        </div>
+          </>
+        ) : (
+          <div className="rounded-lg border border-dashed border-[#c2c6d5] bg-[#f9f9ff] px-4 py-8 text-center text-[14px] text-[#424753]">
+            No beneficiary submissions exist yet. Use the onboarding flow to create the first live verification record.
+          </div>
+        )}
       </section>
     </>
   );

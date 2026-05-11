@@ -6,8 +6,39 @@ import {
   Scale, 
   ChevronDown 
 } from 'lucide-react';
+import { useMutation } from '@tanstack/react-query';
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { submitBeneficiaryVerification, type SubmitBeneficiaryResponse } from '@/lib/api';
 
 export function OnboardingPage() {
+  const [latestSubmission, setLatestSubmission] = useState<SubmitBeneficiaryResponse | null>(null);
+  const submissionMutation = useMutation({
+    mutationFn: submitBeneficiaryVerification,
+    onSuccess: (response) => {
+      setLatestSubmission(response);
+    },
+  });
+
+  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    const formData = new FormData(event.currentTarget);
+
+    submissionMutation.mutate({
+      accountNumber: String(formData.get('accountNumber') ?? ''),
+      bankCode: String(formData.get('bankCode') ?? ''),
+      bankName: String(formData.get('bankCode') ?? ''),
+      email: String(formData.get('email') ?? ''),
+      fullName: String(formData.get('fullName') ?? ''),
+      organizationName: String(formData.get('organizationName') ?? ''),
+      phone: String(formData.get('phone') ?? ''),
+      programName: String(formData.get('programName') ?? ''),
+      programType: String(formData.get('programType') ?? ''),
+      referenceId: String(formData.get('referenceId') ?? ''),
+    });
+  }
+
   return (
     <main className="px-4 md:px-10 max-w-[1440px] mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-6">
       {/* Onboarding Form Section */}
@@ -28,8 +59,35 @@ export function OnboardingPage() {
           </p>
         </div>
 
+        {submissionMutation.isError ? (
+          <div className="rounded-xl border border-[#ffdad6] bg-[#fff8f7] px-4 py-3 text-sm text-[#93000a]">
+            Submission failed: {submissionMutation.error.message}
+          </div>
+        ) : null}
+
+        {latestSubmission ? (
+          <div className="rounded-xl border border-primary/20 bg-primary/5 px-4 py-4 text-sm text-surface-on flex flex-col gap-3">
+            <div>
+              <p className="font-semibold">Application created successfully.</p>
+              <p className="text-surface-on-variant mt-1">
+                Decision: <span className="font-semibold capitalize text-surface-on">{latestSubmission.decision}</span>.
+                Reference: <span className="font-mono text-surface-on"> {latestSubmission.applicationId}</span>
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-3">
+              <Link className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white hover:opacity-90" to={`/status?applicationId=${latestSubmission.applicationId}`}>
+                View live status
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+              <button className="rounded-lg border border-outline-variant/30 px-4 py-2 text-sm font-semibold text-surface-on hover:bg-surface-container-high" onClick={() => setLatestSubmission(null)} type="button">
+                Create another submission
+              </button>
+            </div>
+          </div>
+        ) : null}
+
         {/* Form Card */}
-        <div className="bg-surface-container rounded-xl border border-white/10 shadow-lg p-6 md:p-8 flex flex-col gap-6 relative overflow-hidden w-full">
+        <form className="bg-surface-container rounded-xl border border-white/10 shadow-lg p-6 md:p-8 flex flex-col gap-6 relative overflow-hidden w-full" onSubmit={handleSubmit}>
           {/* Subtle Gradient Accent */}
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-surface-container"></div>
           
@@ -41,18 +99,85 @@ export function OnboardingPage() {
                 <input 
                   className="bg-surface-container-high border border-outline-variant/30 rounded-lg px-4 py-3 font-body-md text-sm text-surface-on focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none transition-all placeholder:text-outline" 
                   id="fullName" 
+                  name="fullName"
                   placeholder="As it appears on your ID" 
+                  required
                   type="text" 
                 />
               </div>
               <div className="flex flex-col gap-2">
-                <label className="font-label-md text-xs font-semibold text-surface-on-variant" htmlFor="scholarshipId">Institution / Reference ID</label>
+                <label className="font-label-md text-xs font-semibold text-surface-on-variant" htmlFor="referenceId">Institution / Reference ID</label>
                 <input 
                   className="bg-surface-container-high border border-outline-variant/30 rounded-lg px-4 py-3 font-mono text-sm text-surface-on focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none transition-all placeholder:text-outline" 
-                  id="scholarshipId" 
+                  id="referenceId" 
+                  name="referenceId"
                   placeholder="e.g. REF-2024-9876" 
+                  required
                   type="text" 
                 />
+              </div>
+              <div className="flex flex-col gap-2">
+                <label className="font-label-md text-xs font-semibold text-surface-on-variant" htmlFor="email">Email Address</label>
+                <input 
+                  className="bg-surface-container-high border border-outline-variant/30 rounded-lg px-4 py-3 font-body-md text-sm text-surface-on focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none transition-all placeholder:text-outline" 
+                  id="email" 
+                  name="email"
+                  placeholder="name@example.org" 
+                  type="email" 
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <label className="font-label-md text-xs font-semibold text-surface-on-variant" htmlFor="phone">Phone Number</label>
+                <input 
+                  className="bg-surface-container-high border border-outline-variant/30 rounded-lg px-4 py-3 font-body-md text-sm text-surface-on focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none transition-all placeholder:text-outline" 
+                  id="phone" 
+                  name="phone"
+                  placeholder="08012345678" 
+                  type="tel" 
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-5 pt-4">
+            <h2 className="font-title-lg text-xl font-medium text-surface-on border-b border-outline-variant/20 pb-2">Program Context</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div className="flex flex-col gap-2">
+                <label className="font-label-md text-xs font-semibold text-surface-on-variant" htmlFor="programName">Program Name</label>
+                <input 
+                  className="bg-surface-container-high border border-outline-variant/30 rounded-lg px-4 py-3 font-body-md text-sm text-surface-on focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none transition-all placeholder:text-outline" 
+                  id="programName" 
+                  name="programName"
+                  placeholder="2025 Merit Scholarship" 
+                  type="text" 
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <label className="font-label-md text-xs font-semibold text-surface-on-variant" htmlFor="organizationName">Institution / Organisation</label>
+                <input 
+                  className="bg-surface-container-high border border-outline-variant/30 rounded-lg px-4 py-3 font-body-md text-sm text-surface-on focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none transition-all placeholder:text-outline" 
+                  id="organizationName" 
+                  name="organizationName"
+                  placeholder="PROVA Demo University" 
+                  type="text" 
+                />
+              </div>
+              <div className="flex flex-col gap-2 md:max-w-sm">
+                <label className="font-label-md text-xs font-semibold text-surface-on-variant" htmlFor="programType">Program Type</label>
+                <div className="relative">
+                  <select 
+                    className="w-full bg-surface-container-high border border-outline-variant/30 rounded-lg px-4 py-3 font-body-md text-sm text-surface-on focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none transition-all appearance-none cursor-pointer" 
+                    defaultValue="Scholarship"
+                    id="programType"
+                    name="programType"
+                  >
+                    <option value="Scholarship">Scholarship</option>
+                    <option value="Stipend">Stipend</option>
+                    <option value="Grant">Grant</option>
+                    <option value="Bursary">Bursary</option>
+                  </select>
+                  <ChevronDown className="w-5 h-5 absolute right-3 top-1/2 -translate-y-1/2 text-surface-on-variant pointer-events-none" />
+                </div>
               </div>
             </div>
           </div>
@@ -65,15 +190,17 @@ export function OnboardingPage() {
                 <div className="relative">
                   <select 
                     className="w-full bg-surface-container-high border border-outline-variant/30 rounded-lg px-4 py-3 font-body-md text-sm text-surface-on focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none transition-all appearance-none cursor-pointer" 
-                    id="bankSelect"
                     defaultValue=""
+                    id="bankCode"
+                    name="bankCode"
+                    required
                   >
                     <option className="text-outline" disabled value="">Select Institution</option>
-                    <option value="chase">JPMorgan Chase</option>
-                    <option value="bofa">Bank of America</option>
-                    <option value="citi">Citibank</option>
-                    <option value="wells">Wells Fargo</option>
-                    <option value="other">Other / Credit Union</option>
+                    <option value="Access Bank">Access Bank</option>
+                    <option value="First Bank">First Bank</option>
+                    <option value="GTBank">GTBank</option>
+                    <option value="UBA">UBA</option>
+                    <option value="Zenith Bank">Zenith Bank</option>
                   </select>
                   <ChevronDown className="w-5 h-5 absolute right-3 top-1/2 -translate-y-1/2 text-surface-on-variant pointer-events-none" />
                 </div>
@@ -83,7 +210,9 @@ export function OnboardingPage() {
                 <input 
                   className="bg-surface-container-high border border-outline-variant/30 rounded-lg px-4 py-3 font-mono text-sm text-surface-on focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none transition-all placeholder:text-outline" 
                   id="accountNumber" 
+                  name="accountNumber"
                   placeholder="•••• •••• ••••" 
+                  required
                   type="password" 
                 />
               </div>
@@ -92,12 +221,12 @@ export function OnboardingPage() {
 
           {/* Action Footer */}
           <div className="flex justify-end pt-6 mt-2 border-t border-outline-variant/20">
-            <button className="bg-primary-container text-primary-on-container hover:bg-primary hover:text-primary-on transition-colors px-6 py-3 rounded-lg font-label-md text-sm font-semibold flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-surface">
-              Continue to Liveness Check
+            <button className="bg-primary-container text-primary-on-container hover:bg-primary hover:text-primary-on transition-colors px-6 py-3 rounded-lg font-label-md text-sm font-semibold flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-surface disabled:opacity-60" disabled={submissionMutation.isPending} type="submit">
+              {submissionMutation.isPending ? 'Submitting live application...' : 'Submit to PROVA'}
               <ArrowRight className="w-5 h-5" />
             </button>
           </div>
-        </div>
+        </form>
       </div>
 
       {/* Security Sidebar (PROVA Protocol) */}
