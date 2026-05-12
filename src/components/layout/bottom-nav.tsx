@@ -2,11 +2,11 @@ import { LayoutDashboard, Users, CircleDollarSign, ShieldCheck, History } from '
 import { NavLink } from 'react-router-dom';
 
 const navItems = [
-  { to: '/', icon: LayoutDashboard, label: 'Dashboard', end: true },
-  { to: '/beneficiaries', icon: Users, label: 'Recipients' },
-  { to: '/disbursements', icon: CircleDollarSign, label: 'Payouts' },
+  { to: '/admin/home', icon: LayoutDashboard, label: 'Dashboard', end: true },
+  { to: '/admin/beneficiaries', icon: Users, label: 'Recipients' },
+  { to: '/admin/disbursements', icon: CircleDollarSign, label: 'Payouts' },
   { to: '/verification-hub', icon: ShieldCheck, label: 'Verify' },
-  { to: '/audit-logs', icon: History, label: 'Audit' },
+  { to: '/admin/audit', icon: History, label: 'Audit' },
 ];
 
 export function BottomNav() {

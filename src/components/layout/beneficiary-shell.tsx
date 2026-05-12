@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { Shield, LogOut } from 'lucide-react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface BeneficiaryShellProps {
   children: ReactNode;
@@ -9,6 +10,8 @@ interface BeneficiaryShellProps {
 export function BeneficiaryShell({ children }: BeneficiaryShellProps) {
   const location = useLocation();
   const isOnboarding = location.pathname.includes('/onboarding');
+  const { logout } = useAuth();
+  const navigate = useNavigate();
 
   return (
     <div className="bg-background text-surface-on min-h-screen flex flex-col font-body-md antialiased">
@@ -24,7 +27,13 @@ export function BeneficiaryShell({ children }: BeneficiaryShellProps) {
               Cancel Onboarding
             </button>
           ) : (
-            <button className="flex items-center gap-2 bg-surface-container-lowest border border-outline-variant/30 px-4 py-2 rounded-lg hover:bg-surface-variant transition-colors text-surface-on font-label-md text-xs font-semibold uppercase tracking-wider">
+            <button
+              onClick={() => {
+                logout();
+                navigate('/login');
+              }}
+              className="flex items-center gap-2 bg-surface-container-lowest border border-outline-variant/30 px-4 py-2 rounded-lg hover:bg-surface-variant transition-colors text-surface-on font-label-md text-xs font-semibold uppercase tracking-wider"
+            >
               <LogOut className="w-4 h-4" />
               Logout
             </button>

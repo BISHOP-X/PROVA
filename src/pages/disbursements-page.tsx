@@ -1,4 +1,5 @@
 import { Plus, Wallet, RefreshCw, Building2, Users2, Filter, Download, CheckCircle2 } from 'lucide-react';
+import { useSubmissions } from '@/contexts/SubmissionsContext';
 
 const batches = [
   {
@@ -36,6 +37,9 @@ const completedPayouts = [
 ];
 
 export function DisbursementsPage() {
+  const { submissions } = useSubmissions();
+  const approved = submissions.filter((s) => s.status === 'approved');
+
   return (
     <>
       {/* Header */}
@@ -112,6 +116,27 @@ export function DisbursementsPage() {
               </div>
             ))}
           </div>
+        </div>
+        
+        {/* Approved beneficiaries summary */}
+        <div className="lg:col-span-4 bg-white rounded-xl p-6 shadow-[0_1px_3px_rgba(0,0,0,0.12)] border border-[#c2c6d5]">
+          <h3 className="text-lg font-bold mb-4">Ready for Payout</h3>
+          {approved.length === 0 ? (
+            <div className="text-sm text-muted">No approved beneficiaries yet.</div>
+          ) : (
+            <div className="flex flex-col gap-3">
+              {approved.slice(0, 10).map((a) => (
+                <div key={a.id} className="p-3 rounded border bg-[#f8fafc] flex items-center justify-between">
+                  <div>
+                    <div className="font-medium">{a.fullName}</div>
+                    <div className="text-xs text-[#58606a]">{a.bank} • {a.accountMasked}</div>
+                  </div>
+                  <div className="text-xs text-[#0058bd] font-bold">Ready</div>
+                </div>
+              ))}
+              {approved.length > 10 && <div className="text-xs text-muted">And {approved.length - 10} more...</div>}
+            </div>
+          )}
         </div>
       </div>
 

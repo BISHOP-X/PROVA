@@ -8,8 +8,16 @@ import {
   Landmark, 
   Headset 
 } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
+import { useSubmissions } from '@/contexts/SubmissionsContext';
 
 export function StatusTrackerPage() {
+  const { user } = useAuth();
+  const { getByUser } = useSubmissions();
+  const submission = user ? getByUser(user.id) : undefined;
+
+  const currentStatus = submission ? submission.status : 'pending';
+
   return (
     <main className="px-4 md:px-10 max-w-[1440px] mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-8">
       {/* Left Column: Status & Timeline */}
@@ -34,7 +42,10 @@ export function StatusTrackerPage() {
               </div>
               <div>
                 <div className="font-label-md text-xs font-semibold text-surface-on-variant uppercase tracking-wider mb-1">Current Status</div>
-                <h2 className="font-headline-md text-2xl font-bold text-surface-on">Verification in Progress</h2>
+                <h2 className="font-headline-md text-2xl font-bold text-surface-on">{submission ? submission.status.toUpperCase() : 'Not Submitted'}</h2>
+                {submission?.livenessScore != null && (
+                  <div className="text-sm text-surface-on-variant mt-1">Liveness score: {submission.livenessScore}%</div>
+                )}
               </div>
             </div>
             
@@ -63,7 +74,7 @@ export function StatusTrackerPage() {
               </div>
               <div className="pt-1">
                 <h4 className="font-title-lg text-lg font-semibold text-surface-on">Details Submitted</h4>
-                <p className="font-body-sm text-sm text-surface-on-variant mt-1">Oct 24, 2023 at 10:45 AM</p>
+                <p className="font-body-sm text-sm text-surface-on-variant mt-1">{submission ? new Date(submission.createdAt).toLocaleString() : 'Not submitted yet'}</p>
               </div>
             </div>
 
@@ -74,7 +85,7 @@ export function StatusTrackerPage() {
               </div>
               <div className="pt-1">
                 <h4 className="font-title-lg text-lg font-semibold text-secondary">AI Verification</h4>
-                <p className="font-body-sm text-sm text-surface-on-variant mt-1">Automated security and compliance checks are currently running.</p>
+                <p className="font-body-sm text-sm text-surface-on-variant mt-1">{submission ? 'Automated checks completed' : 'Awaiting submission'}</p>
               </div>
             </div>
 
@@ -85,7 +96,7 @@ export function StatusTrackerPage() {
               </div>
               <div className="pt-1">
                 <h4 className="font-title-lg text-lg font-semibold text-surface-on-variant">Reviewer Approval</h4>
-                <p className="font-body-sm text-sm text-surface-on-variant/70 mt-1">Awaiting manual authorization from the compliance team.</p>
+                <p className="font-body-sm text-sm text-surface-on-variant/70 mt-1">{currentStatus === 'review' ? 'Awaiting manual review' : 'Not required'}</p>
               </div>
             </div>
 
@@ -96,7 +107,7 @@ export function StatusTrackerPage() {
               </div>
               <div className="pt-1">
                 <h4 className="font-title-lg text-lg font-semibold text-surface-on-variant">Payout Disbursed</h4>
-                <p className="font-body-sm text-sm text-surface-on-variant/70 mt-1">Funds transferred to your designated account.</p>
+                <p className="font-body-sm text-sm text-surface-on-variant/70 mt-1">{currentStatus === 'approved' ? 'Ready for payout' : 'Pending approval'}</p>
               </div>
             </div>
           </div>

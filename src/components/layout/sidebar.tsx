@@ -2,11 +2,11 @@ import { LayoutDashboard, Users, CircleDollarSign, ShieldCheck, History } from '
 import { NavLink } from 'react-router-dom';
 
 const navItems = [
-  { to: '/', icon: LayoutDashboard, label: 'Dashboard', end: true },
-  { to: '/beneficiaries', icon: Users, label: 'Beneficiaries' },
-  { to: '/disbursements', icon: CircleDollarSign, label: 'Disbursements' },
+  { to: '/admin/dashboard', icon: LayoutDashboard, label: 'Dashboard', end: true },
+  { to: '/admin/beneficiaries', icon: Users, label: 'Beneficiaries' },
+  { to: '/admin/disbursements', icon: CircleDollarSign, label: 'Disbursements' },
   { to: '/verification-hub', icon: ShieldCheck, label: 'Verification Hub' },
-  { to: '/audit-logs', icon: History, label: 'Audit Logs' },
+  { to: '/admin/audit', icon: History, label: 'Audit Logs' },
 ];
 
 export function Sidebar() {

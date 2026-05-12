@@ -6,8 +6,36 @@ import {
   Scale, 
   ChevronDown 
 } from 'lucide-react';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
+import { useSubmissions } from '@/contexts/SubmissionsContext';
 
 export function OnboardingPage() {
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const { addSubmission } = useSubmissions();
+  const { completeOnboarding } = useAuth();
+
+  const [fullName, setFullName] = useState('');
+  const [scholarshipId, setScholarshipId] = useState('');
+  const [bank, setBank] = useState('');
+  const [accountNumber, setAccountNumber] = useState('');
+
+  const handleContinue = () => {
+    if (!user) return navigate('/login');
+    if (!fullName || !bank || !accountNumber) {
+      // minimal validation
+      alert('Please complete full name, bank and account number.');
+      return;
+    }
+    const masked = `•••• •••• ${accountNumber.slice(-4)}`;
+    const sub = addSubmission({ userId: user.id, fullName, scholarshipId, bank, accountMasked: masked, accountLast4: accountNumber.slice(-4) });
+    // mark onboarding as started/completed for beneficiary session
+    try { completeOnboarding(); } catch {}
+    navigate('/onboarding/liveness');
+  };
+
   return (
     <main className="px-4 md:px-10 max-w-[1440px] mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-6">
       {/* Onboarding Form Section */}
@@ -43,6 +71,8 @@ export function OnboardingPage() {
                   id="fullName" 
                   placeholder="As it appears on your ID" 
                   type="text" 
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
                 />
               </div>
               <div className="flex flex-col gap-2">
@@ -52,6 +82,8 @@ export function OnboardingPage() {
                   id="scholarshipId" 
                   placeholder="e.g. REF-2024-9876" 
                   type="text" 
+                  value={scholarshipId}
+                  onChange={(e) => setScholarshipId(e.target.value)}
                 />
               </div>
             </div>
@@ -66,7 +98,8 @@ export function OnboardingPage() {
                   <select 
                     className="w-full bg-surface-container-high border border-outline-variant/30 rounded-lg px-4 py-3 font-body-md text-sm text-surface-on focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none transition-all appearance-none cursor-pointer" 
                     id="bankSelect"
-                    defaultValue=""
+                    value={bank}
+                    onChange={(e) => setBank(e.target.value)}
                   >
                     <option className="text-outline" disabled value="">Select Institution</option>
                     <option value="chase">JPMorgan Chase</option>
@@ -85,6 +118,8 @@ export function OnboardingPage() {
                   id="accountNumber" 
                   placeholder="•••• •••• ••••" 
                   type="password" 
+                  value={accountNumber}
+                  onChange={(e) => setAccountNumber(e.target.value)}
                 />
               </div>
             </div>
@@ -92,7 +127,7 @@ export function OnboardingPage() {
 
           {/* Action Footer */}
           <div className="flex justify-end pt-6 mt-2 border-t border-outline-variant/20">
-            <button className="bg-primary-container text-primary-on-container hover:bg-primary hover:text-primary-on transition-colors px-6 py-3 rounded-lg font-label-md text-sm font-semibold flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-surface">
+            <button onClick={handleContinue} className="bg-primary-container text-primary-on-container hover:bg-primary hover:text-primary-on transition-colors px-6 py-3 rounded-lg font-label-md text-sm font-semibold flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-surface">
               Continue to Liveness Check
               <ArrowRight className="w-5 h-5" />
             </button>
