@@ -1,8 +1,9 @@
-import { LayoutDashboard, Users, CircleDollarSign, ShieldCheck, History } from 'lucide-react';
+import { LayoutDashboard, Users, CircleDollarSign, ShieldCheck, History, Inbox } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 
 const navItems = [
   { to: '/admin/dashboard', icon: LayoutDashboard, label: 'Dashboard', end: true },
+  { to: '/admin/submissions', icon: Inbox, label: 'Submissions Review' },
   { to: '/admin/beneficiaries', icon: Users, label: 'Beneficiaries' },
   { to: '/admin/disbursements', icon: CircleDollarSign, label: 'Disbursements' },
   { to: '/verification-hub', icon: ShieldCheck, label: 'Verification Hub' },

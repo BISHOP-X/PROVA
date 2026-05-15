@@ -109,6 +109,7 @@ export function OnboardingPage() {
     setValidatingAccount(true);
     setAccountValidationError('');
     setAccountNameLookup(null);
+    setFullName(''); // Clear manually entered name to avoid confusion during validation
 
     try {
       const result = await validateBankAccount(bank, formattedAccount);
@@ -287,6 +288,7 @@ export function OnboardingPage() {
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   autoComplete="name"
+                  disabled={validatingAccount}
                 />
               </div>
 
@@ -387,10 +389,16 @@ export function OnboardingPage() {
                   </p>
                 )}
                 {accountNameLookup && (
-                  <p className="text-xs font-medium text-tertiary flex items-center gap-1.5">
-                    <CheckCircle2 className="w-3.5 h-3.5" />
-                    {accountNameLookup}
-                  </p>
+                  <div className="mt-3 p-3 bg-tertiary/10 border border-tertiary/20 rounded-lg">
+                    <p className="text-[10px] font-bold text-tertiary uppercase tracking-wider mb-1">Verified Account Holder</p>
+                    <p className="text-sm font-bold text-on-surface flex items-center gap-2">
+                      <CheckCircle2 className="w-4 h-4 text-tertiary" />
+                      {accountNameLookup}
+                    </p>
+                    <p className="text-[11px] text-on-surface-variant mt-1 italic">
+                      Please ensure this matches your legal identity.
+                    </p>
+                  </div>
                 )}
               </div>
             </div>

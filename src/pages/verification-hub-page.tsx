@@ -1,50 +1,67 @@
-import { useState } from 'react';
-import { Filter, AlertTriangle, ShieldAlert, Fingerprint, ArrowLeftRight, Cpu, Braces, Info, Pause, Ban, CheckCircle } from 'lucide-react';
+import { useState, useMemo } from 'react';
+import { Filter, AlertTriangle, ShieldAlert, Fingerprint, ArrowLeftRight, Cpu, Braces, Info, Pause, Ban, CheckCircle, Clock } from 'lucide-react';
+import { useSubmissions } from '@/contexts/SubmissionsContext';
+import type { Submission } from '@/contexts/SubmissionsContext';
 
-const queueItems = [
-  {
-    id: 'PRF-8922-A',
-    name: 'Elena Rostova',
-    time: '2m ago',
-    score: 32,
+const getFlagInfo = (submission: Submission) => {
+  const score = submission.livenessScore ?? 0;
+  if (score < 50) return {
     flag: 'Liveness Failed',
     scoreColor: 'text-[#ba1a1a]',
     badgeBg: 'bg-[#ffdad6]',
     badgeBorder: 'border-[#ba1a1a]/20',
     icon: AlertTriangle,
     iconColor: 'text-[#ba1a1a]',
-  },
-  {
-    id: 'PRF-7104-B',
-    name: 'Marcus Chen',
-    time: '15m ago',
-    score: 68,
-    flag: 'OCR Mismatch',
+  };
+  if (score < 75) return {
+    flag: 'Review Required',
     scoreColor: 'text-[#8f4a00]',
     badgeBg: 'bg-[#ffdcc4]',
     badgeBorder: 'border-[#8f4a00]/20',
     icon: ShieldAlert,
     iconColor: 'text-[#8f4a00]',
-  },
-  {
-    id: 'PRF-9011-X',
-    name: 'Sarah Jenkins',
-    time: '1h ago',
-    score: 55,
-    flag: 'Doc Expired',
-    scoreColor: 'text-[#424753]',
-    badgeBg: 'bg-[#e7e7f1]',
-    badgeBorder: 'border-[#c2c6d5]',
-    icon: Fingerprint,
-    iconColor: 'text-[#424753]',
-  },
-];
+  };
+  return {
+    flag: 'Verification Pass',
+    scoreColor: 'text-green-700',
+    badgeBg: 'bg-green-50',
+    badgeBorder: 'border-green-200',
+    icon: CheckCircle,
+    iconColor: 'text-green-700',
+  };
+};
 
 export function VerificationHubPage() {
+  const { submissions, updateSubmissionStatus } = useSubmissions();
   const [activeItem, setActiveItem] = useState(0);
   const [mobileView, setMobileView] = useState<'queue' | 'detail'>('queue');
+  const [acting, setActing] = useState(false);
+
+  const queueItems = useMemo(() => {
+    return submissions
+      .filter(s => s.status === 'pending' || s.status === 'review')
+      .map(s => ({
+        ...s,
+        ...getFlagInfo(s),
+        time: s.createdAt ? new Date(s.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'N/A',
+      }));
+  }, [submissions]);
 
   const selected = queueItems[activeItem];
+
+  const handleStatusChange = async (newStatus: 'approved' | 'review' | 'rejected') => {
+    if (!selected) return;
+    setActing(true);
+    try {
+      await updateSubmissionStatus(selected.id, newStatus);
+      // If we approved or rejected, it will disappear from the queue
+      if (activeItem >= queueItems.length - 1 && activeItem > 0) {
+        setActiveItem(activeItem - 1);
+      }
+    } finally {
+      setActing(false);
+    }
+  };
 
   return (
     <>
@@ -54,7 +71,7 @@ export function VerificationHubPage() {
           onClick={() => setMobileView('queue')}
           className={`flex-1 py-2.5 text-[13px] font-bold transition-colors ${mobileView === 'queue' ? 'bg-[#0058bd] text-white' : 'bg-white text-[#424753]'}`}
         >
-          Queue (12)
+          Queue ({queueItems.length})
         </button>
         <button
           onClick={() => setMobileView('detail')}
@@ -72,7 +89,7 @@ export function VerificationHubPage() {
           <div className="px-4 py-4 border-b border-[#c2c6d5] flex justify-between items-center">
             <div className="flex items-center gap-2">
               <h2 className="text-[16px] font-bold text-[#191b22]">Pending</h2>
-              <span className="bg-[#ffdad6] text-[#ba1a1a] text-[11px] px-2 py-0.5 rounded-full font-bold">12</span>
+              <span className="bg-[#ffdad6] text-[#ba1a1a] text-[11px] px-2 py-0.5 rounded-full font-bold">{queueItems.length}</span>
             </div>
             <button className="text-[#424753] hover:text-[#0058bd] transition-colors">
               <Filter className="w-5 h-5" />
@@ -92,50 +109,60 @@ export function VerificationHubPage() {
               >
                 <div className="flex justify-between items-start mb-2">
                   <div>
-                    <p className={`font-bold text-[14px] ${idx === activeItem ? 'text-[#191b22]' : 'text-[#191b22]/80'}`}>{item.name}</p>
-                    <p className="font-mono text-[11px] text-[#424753] mt-0.5">ID: {item.id}</p>
+                    <p className={`font-bold text-[14px] ${idx === activeItem ? 'text-[#191b22]' : 'text-[#191b22]/80'}`}>{item.fullName}</p>
+                    <p className="font-mono text-[11px] text-[#424753] mt-0.5">ID: {item.applicationId || item.id.slice(0, 8)}</p>
                   </div>
                   <span className="text-[11px] text-[#424753] font-mono">{item.time}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-bold ${item.badgeBg} border ${item.badgeBorder}`}>
                     <item.icon className={`w-3 h-3 ${item.iconColor}`} />
-                    <span className={item.scoreColor}>Score: {item.score}</span>
+                    <span className={item.scoreColor}>Score: {item.livenessScore ?? '??'}</span>
                   </span>
                   <span className={`ml-auto text-[11px] font-bold ${item.scoreColor}`}>{item.flag}</span>
                 </div>
               </button>
             ))}
+            {queueItems.length === 0 && (
+              <div className="p-8 text-center text-[14px] text-[#424753]">
+                No pending verifications.
+              </div>
+            )}
           </div>
         </div>
 
-        {/* ── RIGHT PANE: Detail ── */}
-        <div className={`${mobileView === 'detail' ? 'flex' : 'hidden'} md:flex flex-1 flex-col bg-white rounded-xl border border-[#c2c6d5] shadow-[0_1px_3px_rgba(0,0,0,0.12)] overflow-hidden min-w-0`}>
-          {/* Detail header */}
-          <div className="px-6 py-5 border-b border-[#c2c6d5] bg-[#f9f9ff] flex items-center justify-between">
-            <div>
-              <div className="flex items-center gap-2 mb-1.5">
-                <span className="px-2 py-0.5 rounded bg-[#ffdad6] text-[#ba1a1a] font-mono text-[10px] font-bold uppercase tracking-wider">
-                  High Risk Flag
-                </span>
-                <span className="text-[#424753] font-mono text-[11px]">Session: #883A-9F21</span>
+          <div className={`${mobileView === 'detail' ? 'flex' : 'hidden'} md:flex flex-1 flex-col bg-white rounded-xl border border-[#c2c6d5] shadow-[0_1px_3px_rgba(0,0,0,0.12)] overflow-hidden min-w-0`}>
+            {!selected ? (
+              <div className="flex-1 flex items-center justify-center text-[#424753]">
+                Select an item from the queue to review
               </div>
-              <h2 className="text-[24px] font-bold tracking-tight text-[#191b22]">{selected.name}</h2>
-              <p className="text-[14px] text-[#424753] mt-0.5">Initiated: Oct 24, 2023 - 14:32 UTC</p>
-            </div>
-            {/* Trust score ring */}
-            <div className="text-center shrink-0">
-              <div className="relative w-16 h-16 flex items-center justify-center">
-                <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 100 100">
-                  <circle cx="50" cy="50" r="46" fill="none" stroke="#e7e7f1" strokeWidth="8" />
-                  <circle cx="50" cy="50" r="46" fill="none" stroke="#ba1a1a" strokeWidth="8"
-                    strokeDasharray="289" strokeDashoffset="197" className="transition-all duration-700" />
-                </svg>
-                <span className="text-[18px] font-bold text-[#ba1a1a] relative z-10">{selected.score}</span>
-              </div>
-              <p className="text-[10px] font-bold text-[#424753] uppercase tracking-wider mt-1">Trust Score</p>
-            </div>
-          </div>
+            ) : (
+              <>
+                <div className="px-6 py-5 border-b border-[#c2c6d5] bg-[#f9f9ff] flex items-center justify-between">
+                  <div>
+                    <div className="flex items-center gap-2 mb-1.5">
+                      <span className={`px-2 py-0.5 rounded ${selected.badgeBg} ${selected.scoreColor} font-mono text-[10px] font-bold uppercase tracking-wider`}>
+                        {selected.flag}
+                      </span>
+                      <span className="text-[#424753] font-mono text-[11px]">Session: #{selected.id.slice(0, 8).toUpperCase()}</span>
+                    </div>
+                    <h2 className="text-[24px] font-bold tracking-tight text-[#191b22]">{selected.fullName}</h2>
+                    <p className="text-[14px] text-[#424753] mt-0.5">Initiated: {new Date(selected.createdAt).toLocaleString()}</p>
+                  </div>
+                  {/* Trust score ring */}
+                  <div className="text-center shrink-0">
+                    <div className="relative w-16 h-16 flex items-center justify-center">
+                      <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="46" fill="none" stroke="#e7e7f1" strokeWidth="8" />
+                        <circle cx="50" cy="50" r="46" fill="none" stroke="currentColor" strokeWidth="8"
+                          strokeDasharray="289" strokeDashoffset={289 - (289 * (selected.livenessScore ?? 0)) / 100} 
+                          className={`transition-all duration-700 ${selected.scoreColor}`} />
+                      </svg>
+                      <span className={`text-[18px] font-bold relative z-10 ${selected.scoreColor}`}>{selected.livenessScore ?? 0}</span>
+                    </div>
+                    <p className="text-[10px] font-bold text-[#424753] uppercase tracking-wider mt-1">Trust Score</p>
+                  </div>
+                </div>
 
           {/* Scrollable content */}
           <div className="flex-1 overflow-y-auto p-5 md:p-8 bg-[#f9f9ff]">
@@ -199,16 +226,18 @@ export function VerificationHubPage() {
                       </div>
                     </div>
                   ))}
-                  <div className="p-3 bg-[#ffdad6]/30 border border-[#ba1a1a]/20 rounded-lg mt-1">
+                  <div className="p-3 bg-tertiary/10 border border-tertiary/20 rounded-lg mt-1">
                     <div className="flex justify-between text-[13px] mb-1">
-                      <span className="font-bold text-[#ba1a1a]">Liveness Detection</span>
-                      <span className="font-mono font-bold text-[#ba1a1a]">40%</span>
+                      <span className="font-bold text-tertiary">Liveness Detection</span>
+                      <span className="font-mono font-bold text-tertiary">{selected.livenessScore ?? 0}%</span>
                     </div>
                     <div className="h-2 bg-[#e7e7f1] rounded-full overflow-hidden mb-2">
-                      <div className="h-full bg-[#ba1a1a] rounded-full w-[40%]" />
+                      <div className={`h-full bg-tertiary rounded-full`} style={{ width: `${selected.livenessScore ?? 0}%` }} />
                     </div>
                     <p className="text-[12px] text-[#424753] leading-relaxed">
-                      AI detected irregular micro-movements inconsistent with live presence.
+                      {selected.livenessScore && selected.livenessScore < 50 
+                        ? "AI detected irregular micro-movements inconsistent with live presence."
+                        : "AI analysis confirms biological signature matches live capture."}
                     </p>
                   </div>
                 </div>
@@ -220,9 +249,9 @@ export function VerificationHubPage() {
                   </h3>
                   <div className="grid grid-cols-2 gap-4">
                     {[
-                      { label: 'First Name', val: 'ELENA' },
-                      { label: 'Last Name', val: 'ROSTOVA' },
-                      { label: 'Document No.', val: 'A88392011', span: true },
+                      { label: 'Full Name', val: selected.fullName },
+                      { label: 'Bank Code', val: selected.bank || 'N/A' },
+                      { label: 'Account No.', val: selected.accountMasked || 'N/A', span: true },
                     ].map(({ label, val, span }) => (
                       <div key={label} className={span ? 'col-span-2' : ''}>
                         <p className="text-[10px] font-bold text-[#424753] uppercase tracking-wider">{label}</p>
@@ -252,20 +281,34 @@ export function VerificationHubPage() {
                 </div>
               </div>
               <div className="flex flex-wrap justify-end gap-3">
-                <button className="flex items-center gap-2 px-5 py-2.5 rounded-lg border border-[#c2c6d5] text-[#191b22] font-bold text-[12px] hover:bg-[#f2f3fd] transition-colors">
+                <button 
+                  onClick={() => handleStatusChange('review')}
+                  disabled={acting}
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-lg border border-[#c2c6d5] text-[#191b22] font-bold text-[12px] hover:bg-[#f2f3fd] transition-colors disabled:opacity-50"
+                >
                   <Pause className="w-4 h-4" /> HOLD FOR REVIEW
                 </button>
-                <button className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#ba1a1a] text-white font-bold text-[12px] hover:opacity-90 transition-opacity">
+                <button 
+                  onClick={() => handleStatusChange('rejected')}
+                  disabled={acting}
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#ba1a1a] text-white font-bold text-[12px] hover:opacity-90 transition-opacity disabled:opacity-50"
+                >
                   <Ban className="w-4 h-4" /> REJECT
                 </button>
-                <button disabled className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#0058bd] text-white font-bold text-[12px] opacity-40 cursor-not-allowed">
+                <button 
+                  onClick={() => handleStatusChange('approved')}
+                  disabled={acting}
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#0058bd] text-white font-bold text-[12px] hover:opacity-90 transition-opacity disabled:opacity-50"
+                >
                   <CheckCircle className="w-4 h-4" /> APPROVE
                 </button>
               </div>
             </div>
           </div>
-        </div>
-      </div>
-    </>
+        </>
+      )}
+    </div>
+  </div>
+</>
   );
 }

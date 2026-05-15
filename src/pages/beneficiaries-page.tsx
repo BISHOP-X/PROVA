@@ -1,6 +1,7 @@
-import { UserPlus, Filter, Download, MoreVertical, CheckCircle2, Clock3, ShieldAlert, Search, Users, Flag } from 'lucide-react';
+import { UserPlus, Filter, Download, MoreVertical, CheckCircle2, Clock3, ShieldAlert, Search, Users, Flag, XCircle, AlertCircle, Clock, CheckCircle } from 'lucide-react';
 import { useSubmissions } from '@/contexts/SubmissionsContext';
 import type { SubmissionStatus } from '@/contexts/SubmissionsContext';
+import { useState } from 'react';
 
 const statusBadge: Record<SubmissionStatus, string> = {
   approved: 'bg-green-100 text-green-800',
@@ -27,10 +28,21 @@ const getInitials = (name: string) =>
 const formatStatus = (status: SubmissionStatus) => status.replace('_', ' ').toUpperCase();
 
 export function BeneficiariesPage() {
-  const { submissions } = useSubmissions();
+  const { submissions, updateSubmissionStatus } = useSubmissions();
+  const [actingOnId, setActingOnId] = useState<string | null>(null);
+
   const total = submissions.length;
   const pending = submissions.filter((submission) => submission.status === 'pending').length;
   const flagged = submissions.filter((submission) => submission.status === 'review' || submission.status === 'rejected').length;
+
+  const handleStatusChange = async (submissionId: string, newStatus: SubmissionStatus) => {
+    setActingOnId(submissionId);
+    try {
+      await updateSubmissionStatus(submissionId, newStatus);
+    } finally {
+      setActingOnId(null);
+    }
+  };
 
   return (
     <>
@@ -124,9 +136,32 @@ export function BeneficiariesPage() {
                   </td>
                   <td className="px-6 py-4 text-[14px] text-[#424753]">{new Date(beneficiary.createdAt).toLocaleString()}</td>
                   <td className="px-6 py-4 text-right">
-                    <button className="p-2 hover:bg-[#e7e7f1] rounded-full transition-colors">
-                      <MoreVertical className="w-4 h-4 text-[#424753]" />
-                    </button>
+                    <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <button
+                        onClick={() => handleStatusChange(beneficiary.id, 'approved')}
+                        disabled={actingOnId === beneficiary.id || beneficiary.status === 'approved'}
+                        title="Approve"
+                        className="p-1.5 bg-green-50 text-green-700 rounded-lg hover:bg-green-100 disabled:opacity-30 transition-colors"
+                      >
+                        <CheckCircle className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => handleStatusChange(beneficiary.id, 'review')}
+                        disabled={actingOnId === beneficiary.id || beneficiary.status === 'review'}
+                        title="Hold for Review"
+                        className="p-1.5 bg-orange-50 text-orange-700 rounded-lg hover:bg-orange-100 disabled:opacity-30 transition-colors"
+                      >
+                        <Clock className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => handleStatusChange(beneficiary.id, 'rejected')}
+                        disabled={actingOnId === beneficiary.id || beneficiary.status === 'rejected'}
+                        title="Reject"
+                        className="p-1.5 bg-red-50 text-red-700 rounded-lg hover:bg-red-100 disabled:opacity-30 transition-colors"
+                      >
+                        <XCircle className="w-4 h-4" />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}

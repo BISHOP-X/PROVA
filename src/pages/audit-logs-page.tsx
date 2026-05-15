@@ -1,65 +1,58 @@
-import { Lock, Download, CalendarDays, UserSearch, AlertTriangle, Bot, ShieldAlert, Settings, ShieldCheck, FileJson, ChevronLeft, ChevronRight } from 'lucide-react';
-
-const logRows = [
-  {
-    timestamp: '2023-10-25 14:32:01',
-    ms: '.842Z',
-    actorIcon: Bot,
-    actorBg: 'bg-[#d8e2ff]',
-    actorIconColor: 'text-[#0058bd]',
-    actor: 'KYC_Engine_v3',
-    dotColor: 'bg-green-500',
-    eventType: 'Verification Approved',
-    eventColor: 'text-[#191b22]',
-    detail: 'Beneficiary DOC_ID: bnf_8x92m. Confidence score: 99.4%',
-    hash: '0x9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',
-    highlight: false,
-  },
-  {
-    timestamp: '2023-10-25 14:30:45',
-    ms: '.112Z',
-    actorIcon: ShieldAlert,
-    actorBg: 'bg-[#ffdad6]',
-    actorIconColor: 'text-[#ba1a1a]',
-    actor: 'Admin.094',
-    dotColor: 'bg-[#ba1a1a]',
-    eventType: 'Payout Initiated',
-    eventColor: 'text-[#ba1a1a] font-bold',
-    detail: 'Manual override on block: Risk score 82. Amount: $450,000.00',
-    hash: '0x5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8',
-    highlight: true,
-  },
-  {
-    timestamp: '2023-10-25 14:15:00',
-    ms: '.000Z',
-    actorIcon: Settings,
-    actorBg: 'bg-[#e7e7f1]',
-    actorIconColor: 'text-[#424753]',
-    actor: 'Sys_Cron_Node',
-    dotColor: 'bg-[#8f4a00]',
-    eventType: 'Batch Sync',
-    eventColor: 'text-[#191b22]',
-    detail: 'Completed ledger synchronization with remote node NA-EAST-1. 14,204 records updated.',
-    hash: '0x8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92',
-    highlight: false,
-  },
-  {
-    timestamp: '2023-10-25 13:45:22',
-    ms: '.331Z',
-    actorIcon: ShieldCheck,
-    actorBg: 'bg-[#e7e7f1]',
-    actorIconColor: 'text-[#424753]',
-    actor: 'Admin.094',
-    dotColor: 'bg-[#0058bd]',
-    eventType: 'Session Login',
-    eventColor: 'text-[#191b22]',
-    detail: 'MFA validated via Hardware Token. IP: 192.168.1.44 (Internal VPN)',
-    hash: '0x3e23e8160039594a33894f6564e1b1348bbd7a0088d42c4acb73eeaed59c009d',
-    highlight: false,
-  },
-];
+import { Lock, Download, CalendarDays, UserSearch, AlertTriangle, Bot, ShieldAlert, Settings, ShieldCheck, FileJson, ChevronLeft, ChevronRight, User, CheckCircle, ClipboardList } from 'lucide-react';
+import { useSubmissions } from '@/contexts/SubmissionsContext';
+import { useMemo } from 'react';
 
 export function AuditLogsPage() {
+  const { auditEvents, submissions } = useSubmissions();
+
+  const logRows = useMemo(() => {
+    return auditEvents.map(event => {
+      const submission = submissions.find(s => s.id === event.submissionId);
+      const beneficiaryName = submission?.fullName || 'System';
+      
+      let Icon = Settings;
+      let bg = 'bg-[#e7e7f1]';
+      let iconColor = 'text-[#424753]';
+      let dotColor = 'bg-[#8f4a00]';
+      let eventType = 'System Event';
+
+      if (event.type === 'submitted') {
+        Icon = CheckCircle;
+        bg = 'bg-[#d8e2ff]';
+        iconColor = 'text-[#0058bd]';
+        dotColor = 'bg-green-500';
+        eventType = 'New Submission';
+      } else if (event.type === 'status_change') {
+        Icon = ShieldAlert;
+        bg = 'bg-[#ffdad6]';
+        iconColor = 'text-[#ba1a1a]';
+        dotColor = 'bg-[#ba1a1a]';
+        eventType = 'Status Updated';
+      } else if (event.type === 'note') {
+        Icon = ClipboardList;
+        bg = 'bg-orange-50';
+        iconColor = 'text-orange-600';
+        dotColor = 'bg-orange-400';
+        eventType = 'Reviewer Note';
+      }
+
+      return {
+        id: event.id,
+        timestamp: new Date(event.createdAt).toISOString().replace('T', ' ').split('.')[0],
+        ms: '.' + new Date(event.createdAt).getMilliseconds().toString().padStart(3, '0') + 'Z',
+        actorIcon: Icon,
+        actorBg: bg,
+        actorIconColor: iconColor,
+        actor: event.actor || (event.type === 'system' ? 'SYSTEM' : 'ADMIN'),
+        dotColor,
+        eventType,
+        eventColor: event.type === 'status_change' ? 'text-[#ba1a1a] font-bold' : 'text-[#191b22]',
+        detail: `${beneficiaryName}: ${event.message}`,
+        hash: `0x${event.id.replace(/-/g, '').slice(0, 64)}`,
+        highlight: event.type === 'status_change',
+      };
+    });
+  }, [auditEvents, submissions]);
   return (
     <>
       {/* Header */}
@@ -140,7 +133,7 @@ export function AuditLogsPage() {
             </thead>
             <tbody className="divide-y divide-[#c2c6d5]">
               {logRows.map((row) => (
-                <tr key={row.timestamp} className={`hover:bg-[#f9f9ff] transition-colors ${row.highlight ? 'bg-[#ffdad6]/20' : ''}`}>
+                <tr key={row.id} className={`hover:bg-[#f9f9ff] transition-colors ${row.highlight ? 'bg-[#ffdad6]/20' : ''}`}>
                   <td className="px-6 py-4">
                     <p className="font-mono text-[13px] font-bold text-[#191b22]">{row.timestamp}</p>
                     <p className="font-mono text-[11px] text-[#424753]">{row.ms}</p>
@@ -179,7 +172,7 @@ export function AuditLogsPage() {
         {/* Mobile cards */}
         <div className="md:hidden divide-y divide-[#c2c6d5]">
           {logRows.map((row) => (
-            <div key={row.timestamp} className={`px-4 py-4 ${row.highlight ? 'bg-[#ffdad6]/20' : ''}`}>
+            <div key={row.id} className={`px-4 py-4 ${row.highlight ? 'bg-[#ffdad6]/20' : ''}`}>
               <div className="flex items-start justify-between mb-2">
                 <div className="flex items-center gap-2">
                   <div className={`w-8 h-8 rounded-lg ${row.actorBg} flex items-center justify-center shrink-0`}>
@@ -205,7 +198,7 @@ export function AuditLogsPage() {
 
         {/* Pagination */}
         <div className="px-6 py-4 border-t border-[#c2c6d5] flex items-center justify-between">
-          <span className="text-[12px] text-[#424753]">Showing 1–4 of 24,091 immutable records</span>
+          <span className="text-[12px] text-[#424753]">Showing {logRows.length} immutable records</span>
           <div className="flex items-center gap-2">
             <button disabled className="p-2 rounded-lg bg-[#f2f3fd] border border-[#c2c6d5] text-[#424753] disabled:opacity-40">
               <ChevronLeft className="w-4 h-4" />
