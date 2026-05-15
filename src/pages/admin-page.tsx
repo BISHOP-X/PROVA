@@ -1,8 +1,4 @@
-import { useNavigate } from 'react-router-dom';
-
 export function AdminPage() {
-  const navigate = useNavigate();
-
   return (
     <div className="pt-6 px-8 pb-12 min-h-screen bg-surface text-on-surface">
       <div className="mb-6">

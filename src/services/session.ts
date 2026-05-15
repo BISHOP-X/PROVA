@@ -2,6 +2,13 @@ const KEY = 'prova_user_v1_session';
 const COOKIE_NAME = 'prova_session';
 const ONE_HOUR_MS = 60 * 60 * 1000;
 
+export type SessionUser = {
+  id: string;
+  email: string;
+  role: 'admin' | 'beneficiary';
+  onboardingComplete?: boolean;
+};
+
 export function setCookie(name: string, value: string, maxAgeSeconds: number) {
   document.cookie = `${name}=${value}; max-age=${maxAgeSeconds}; path=/`;
 }
@@ -10,7 +17,7 @@ export function deleteCookie(name: string) {
   document.cookie = `${name}=; max-age=0; path=/`;
 }
 
-export function createSession(user: any) {
+export function createSession(user: SessionUser) {
   const expiresAt = Date.now() + ONE_HOUR_MS;
   const payload = { user, expiresAt };
   try {
@@ -27,7 +34,7 @@ export function getSession() {
   try {
     const raw = localStorage.getItem(KEY);
     if (!raw) return null;
-    const parsed = JSON.parse(raw) as { user: any; expiresAt: number };
+    const parsed = JSON.parse(raw) as { user: SessionUser; expiresAt: number };
     if (!parsed || !parsed.expiresAt || Date.now() > parsed.expiresAt) {
       clearSession();
       return null;
@@ -52,7 +59,7 @@ export function getSessionExpiresAt(): number | null {
   try {
     const raw = localStorage.getItem(KEY);
     if (!raw) return null;
-    const parsed = JSON.parse(raw) as { user: any; expiresAt: number };
+    const parsed = JSON.parse(raw) as { user: SessionUser; expiresAt: number };
     return parsed?.expiresAt ?? null;
   } catch {
     return null;

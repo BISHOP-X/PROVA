@@ -6,7 +6,7 @@ import { useSubmissions } from '@/contexts/SubmissionsContext';
 export function LivenessPage() {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const [stream, setStream] = useState<MediaStream | null>(null);
+  const [, setStream] = useState<MediaStream | null>(null);
   const [cameraError, setCameraError] = useState<string | null>(null);
   const [captured, setCaptured] = useState(false);
   const [processing, setProcessing] = useState(false);
@@ -15,19 +15,22 @@ export function LivenessPage() {
   const { getByUser, updateSubmissionStatus } = useSubmissions();
 
   useEffect(() => {
+    let activeStream: MediaStream | null = null;
+
     const start = async () => {
       if (!navigator.mediaDevices) return setCameraError('Camera not available');
       try {
         const s = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
+        activeStream = s;
         setStream(s);
         setCameraError(null);
         if (videoRef.current) videoRef.current.srcObject = s;
-      } catch (err: any) {
-        setCameraError(err?.message || 'Unable to access camera');
+      } catch (err: unknown) {
+        setCameraError(err instanceof Error ? err.message : 'Unable to access camera');
       }
     };
     start();
-    return () => { if (stream) stream.getTracks().forEach(t => t.stop()); };
+    return () => { if (activeStream) activeStream.getTracks().forEach(t => t.stop()); };
   }, []);
 
   const handleCapture = () => {
@@ -51,12 +54,10 @@ export function LivenessPage() {
     await new Promise((r) => setTimeout(r, 1500));
     // Simulate liveness score
     const score = Math.floor(30 + Math.random() * 70);
-    let status: any = 'review';
-    if (score >= 75) status = 'approved';
-    else if (score < 50) status = 'rejected';
-    else status = 'review';
+    const status: 'approved' | 'review' | 'rejected' =
+      score >= 75 ? 'approved' : score < 50 ? 'rejected' : 'review';
 
-    updateSubmissionStatus(submission.id, status, { livenessScore: score });
+    await updateSubmissionStatus(submission.id, status, { livenessScore: score });
     setProcessing(false);
     navigate('/status');
   };

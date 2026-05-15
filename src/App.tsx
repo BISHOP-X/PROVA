@@ -11,17 +11,21 @@ import { AuditLogsPage } from '@/pages/audit-logs-page'
 import { OnboardingPage } from '@/pages/onboarding-page'
 import { StatusTrackerPage } from '@/pages/status-tracker-page'
 import { LoginPage } from '@/pages/login-page'
+import { SignupPage } from '@/pages/signup-page'
 import { LivenessPage } from '@/pages/liveness-page'
 import { AuthProvider, ProtectedRoute } from '@/contexts/AuthContext'
 import { SubmissionsProvider } from '@/contexts/SubmissionsContext'
+import { LoginToast } from '@/components/ui/login-toast'
 
 function App() {
   return (
     <AuthProvider>
       <SubmissionsProvider>
+        <LoginToast />
         <Routes>
           {/* Auth Entry */}
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignupPage />} />
           <Route path="/" element={<Navigate to="/login" replace />} />
 
           {/* Institutional Admin Suite (protected) */}

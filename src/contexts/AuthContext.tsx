@@ -1,125 +1,108 @@
-import React, { createContext, useContext, useEffect, useState, useRef } from 'react';
-import { Navigate } from 'react-router-dom';
-import { createSession, getSession, clearSession, getSessionExpiresAt } from '@/services/session';
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import { Navigate, useLocation } from 'react-router-dom';
+import * as sb from '@/services/supabase';
+import type { AppRole, ProfileRecord } from '@/services/supabase';
 
-type Role = 'admin' | 'beneficiary';
+type Role = AppRole;
 
 export type User = {
   id: string;
   email: string;
   role: Role;
+  fullName?: string;
+  phone?: string;
+  createdAt?: string;
   onboardingComplete?: boolean;
 };
 
 type AuthContextType = {
   user: User | null;
-  login: (email: string, role: Role) => Promise<void>;
-  logout: () => void;
+  loading: boolean;
+  login: (email: string, password: string) => Promise<User>;
+  signUp: (email: string, password: string, fullName: string, role: sb.AppRole) => Promise<void>;
+  logout: () => Promise<void>;
   completeOnboarding: () => void;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(() => {
-    // initialize from persisted session if valid
-    try {
-      return getSession();
-    } catch {
-      return null;
-    }
-  });
+const mapProfileToUser = (profile: ProfileRecord, authEmail?: string | null): User => ({
+  id: profile.id,
+  email: profile.email || authEmail || '',
+  role: profile.role,
+  fullName: profile.full_name ?? undefined,
+  phone: profile.phone ?? undefined,
+  createdAt: profile.created_at ?? undefined,
+  onboardingComplete: profile.role === 'admin',
+});
 
-  const expiryTimer = useRef<number | null>(null);
+const loadUserFromSession = async () => {
+  const session = await sb.getAuthSession();
+  if (!session?.user) return null;
+
+  const profile = await sb.getProfileById(session.user.id);
+  return mapProfileToUser(profile, session.user.email);
+};
+
+export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // initialize expiry timer once on mount and keep in sync with storage events
-    function scheduleTimer() {
-      const expiresAt = getSessionExpiresAt();
-      if (expiryTimer.current) {
-        window.clearTimeout(expiryTimer.current);
-        expiryTimer.current = null;
-      }
-      if (expiresAt) {
-        const ms = expiresAt - Date.now();
-        if (ms <= 0) {
-          setUser(null);
-          clearSession();
-        } else {
-          expiryTimer.current = window.setTimeout(() => {
-            setUser(null);
-            clearSession();
-          }, ms);
-        }
+    let mounted = true;
+
+    async function initialize() {
+      try {
+        const sessionUser = await loadUserFromSession();
+        if (mounted) setUser(sessionUser);
+      } catch (err) {
+        console.error('[AuthContext] failed to load Supabase session', err);
+        if (mounted) setUser(null);
+      } finally {
+        if (mounted) setLoading(false);
       }
     }
 
-    console.log('[AuthContext] mounting, initial session expiresAt:', getSessionExpiresAt());
-    scheduleTimer();
+    initialize();
 
-    const handleStorage = () => {
-      console.log('[AuthContext] storage event received — reloading session');
-      // if session changed in another context, re-sync
-      const s = getSession();
-      console.log('[AuthContext] storage -> getSession returned', s);
-      setUser(s);
-      scheduleTimer();
-    };
-
-    window.addEventListener('storage', handleStorage);
+    const subscription = sb.onAuthStateChange(() => {
+      initialize();
+    });
 
     return () => {
-      window.removeEventListener('storage', handleStorage);
-      if (expiryTimer.current) {
-        window.clearTimeout(expiryTimer.current);
-        expiryTimer.current = null;
-      }
+      mounted = false;
+      subscription.unsubscribe();
     };
   }, []);
 
-  const login = async (email: string, role: Role) => {
-    console.log('[AuthContext] login invoked', { email, role });
-    const newUser: User = { id: `${role}_${Date.now()}`, email, role, onboardingComplete: role === 'admin' };
-    setUser(newUser);
-    createSession(newUser);
-    console.log('[AuthContext] session created', { user: newUser });
-    
-    // schedule expiry timer for the new session
-    const expiresAt = getSessionExpiresAt();
-    if (expiresAt) {
-      if (expiryTimer.current) window.clearTimeout(expiryTimer.current);
-      const ms = expiresAt - Date.now();
-      expiryTimer.current = window.setTimeout(() => {
-        console.log('[AuthContext] session expired — clearing');
-        setUser(null);
-        clearSession();
-      }, ms);
-    }
+  const login = async (email: string, password: string) => {
+    const result = await sb.signInWithPassword(email, password);
+    const authUser = result.user;
+    if (!authUser) throw new Error('Supabase did not return an authenticated user.');
 
-    // ensure state is flushed before callers navigate to protected routes
-    await new Promise((r) => setTimeout(r, 0));
+    const profile = await sb.getProfileById(authUser.id);
+    const nextUser = mapProfileToUser(profile, authUser.email);
+    setUser(nextUser);
+    return nextUser;
   };
 
-  const logout = () => {
-    console.log('[AuthContext] logout invoked');
+  const signUp = async (email: string, password: string, fullName: string, role: sb.AppRole) => {
+    await sb.signUp(email, password, fullName, role);
+  };
+
+  const logout = async () => {
+    await sb.signOut();
     setUser(null);
-    clearSession();
-    if (expiryTimer.current) {
-      window.clearTimeout(expiryTimer.current);
-      expiryTimer.current = null;
-    }
   };
 
   const completeOnboarding = () => {
-    if (!user) return;
-    console.log('[AuthContext] completing onboarding');
-    const u = { ...user, onboardingComplete: true };
-    setUser(u);
-    createSession(u);
+    setUser((current) => (current ? { ...current, onboardingComplete: true } : current));
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, completeOnboarding }}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={{ user, loading, login, signUp, logout, completeOnboarding }}>
+      {children}
+    </AuthContext.Provider>
   );
 };
 
@@ -129,33 +112,26 @@ export const useAuth = () => {
   return ctx;
 };
 
-import { useLocation } from 'react-router-dom';
-
 export const ProtectedRoute: React.FC<React.PropsWithChildren<{ requireRole?: Role }>> = ({ children, requireRole }) => {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   const location = useLocation();
-  
-  console.log('[ProtectedRoute] checking access', { 
-    path: location.pathname, 
-    userRole: user?.role, 
-    requireRole 
-  });
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background text-on-background flex items-center justify-center">
+        <div className="text-sm font-medium text-on-surface-variant">Loading secure session...</div>
+      </div>
+    );
+  }
 
   if (!user) {
-    console.log('[ProtectedRoute] no user — redirecting to login', { from: location.pathname });
     return <Navigate to="/login" replace state={{ from: location }} />;
   }
 
   if (requireRole && user.role !== requireRole) {
-    console.log('[ProtectedRoute] role mismatch — redirecting', { 
-      userRole: user.role, 
-      requireRole 
-    });
-    // Redirect beneficiaries to their status/onboarding if they try to hit admin
     if (user.role === 'beneficiary') {
       return <Navigate to="/onboarding" replace />;
     }
-    // Redirect admins to dashboard if they try to hit beneficiary pages
     return <Navigate to="/admin/dashboard" replace />;
   }
 

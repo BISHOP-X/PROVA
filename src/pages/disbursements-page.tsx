@@ -1,44 +1,54 @@
-import { Plus, Wallet, RefreshCw, Building2, Users2, Filter, Download, CheckCircle2 } from 'lucide-react';
+import { Plus, CheckCircle2, Send, AlertCircle, Loader } from 'lucide-react';
+import { useState } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
 import { useSubmissions } from '@/contexts/SubmissionsContext';
-
-const batches = [
-  {
-    id: 'B-8942-A',
-    name: 'Q3 Vendor Settlements',
-    icon: Building2,
-    iconBg: 'bg-[#d8e2ff]',
-    iconColor: 'text-[#0058bd]',
-    amount: '$1,200,500.00',
-    count: 1200,
-    verified: 450,
-    progress: 37.5,
-    status: 'Processing',
-    statusColor: 'text-[#0058bd]',
-  },
-  {
-    id: 'B-8943-X',
-    name: 'Contractor Payouts (Region 2)',
-    icon: Users2,
-    iconBg: 'bg-[#ffdcc4]',
-    iconColor: 'text-[#8f4a00]',
-    amount: '$345,000.00',
-    count: 85,
-    verified: 85,
-    progress: 100,
-    status: 'Awaiting Authorization',
-    statusColor: 'text-[#8f4a00]',
-  },
-];
-
-const completedPayouts = [
-  { id: 'B-8901-C', name: 'Monthly Retainers', date: 'Oct 12, 2023 14:30', recipients: 24, amount: '$120,000.00' },
-  { id: 'B-8890-H', name: 'Hardware Reimbursements', date: 'Oct 10, 2023 09:15', recipients: 8, amount: '$14,550.00' },
-  { id: 'B-8755-A', name: 'Q2 Affiliate Commissions', date: 'Oct 01, 2023 16:45', recipients: 340, amount: '$89,400.00' },
-];
+import { initiateTransfer } from '@/services/squad-api';
 
 export function DisbursementsPage() {
+  const { user } = useAuth();
   const { submissions } = useSubmissions();
+  const [disbursingId, setDisbursingId] = useState<string | null>(null);
+  const [disburseError, setDisburseError] = useState<string | null>(null);
+  const [disburseSuccess, setDisburseSuccess] = useState<string | null>(null);
+
   const approved = submissions.filter((s) => s.status === 'approved');
+  const pending = submissions.filter((s) => s.status === 'pending');
+  const review = submissions.filter((s) => s.status === 'review');
+
+  const handleDisburse = async (submission: typeof approved[0]) => {
+    if (!user || user.role !== 'admin') {
+      setDisburseError('Only admins can disburse funds');
+      return;
+    }
+
+    if (!submission.bank || !submission.accountNumber) {
+      setDisburseError('Invalid beneficiary bank details');
+      return;
+    }
+
+    setDisbursingId(submission.id);
+    setDisburseError(null);
+    setDisburseSuccess(null);
+
+    try {
+      // Call Squad transfer API directly
+      const result = await initiateTransfer({
+        beneficiary_account: submission.accountNumber,
+        beneficiary_bank: submission.bank,
+        amount: 50000, // Amount in kobo (50,000 kobo = ₦500)
+        remark: `PROVA Scholarship - ${submission.fullName}`,
+        currency_id: 'NGN',
+      });
+
+      setDisburseSuccess(`Transfer initiated for ${submission.fullName} (Ref: ${result.transaction_reference})`);
+      setTimeout(() => setDisburseSuccess(null), 4000);
+    } catch (err) {
+      console.error('[Disbursements] transfer error', err);
+      setDisburseError(err instanceof Error ? err.message : 'Transfer failed');
+    } finally {
+      setDisbursingId(null);
+    }
+  };
 
   return (
     <>
@@ -46,7 +56,7 @@ export function DisbursementsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-[20px] font-medium leading-7 text-[#191b22]">Disbursement Management</h1>
-          <p className="text-[14px] text-[#424753] mt-1">Monitor and execute high-volume institutional payouts.</p>
+          <p className="text-[14px] text-[#424753] mt-1">Process payments to approved beneficiaries through Squad.</p>
         </div>
         <button className="flex items-center gap-2 bg-[#0058bd] text-white px-5 py-2.5 rounded-lg font-bold text-[12px] tracking-[0.05em] hover:opacity-90 transition-opacity self-start sm:self-auto">
           <Plus className="w-4 h-4" />
@@ -54,166 +64,107 @@ export function DisbursementsPage() {
         </button>
       </div>
 
-      {/* Bento top row */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Balance Card */}
-        <div className="lg:col-span-4 bg-[#0058bd] text-white rounded-xl p-6 md:p-8 flex flex-col justify-between relative overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.12)]">
-          <div className="absolute -right-8 -top-8 w-44 h-44 rounded-full bg-white/10" />
-          <div className="flex justify-between items-start mb-8 md:mb-12 relative z-10">
-            <div className="flex items-center gap-2 text-[12px] font-bold tracking-[0.08em]">
-              <Wallet className="w-5 h-5" />
-              SQUAD POOL BALANCE
-            </div>
-            <span className="flex items-center gap-1 px-2.5 py-1 bg-white/20 rounded text-[11px] font-bold">
-              <RefreshCw className="w-3 h-3" /> Live
-            </span>
-          </div>
-          <div className="relative z-10">
-            <p className="text-[12px] text-white/70 mb-1 font-mono">USD (Equivalent)</p>
-            <p className="text-[32px] font-bold leading-10 tracking-tight">$4,250,000.00</p>
-            <div className="flex items-center gap-3 mt-4">
-              <span className="px-2 py-1 bg-white/20 rounded text-[11px] font-mono font-bold">API: OK</span>
-              <span className="text-[12px] text-white/70">Last updated: Just now</span>
-            </div>
-          </div>
+      {/* Status Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="bg-white rounded-xl p-4 shadow-sm border border-[#c2c6d5]">
+          <p className="text-[12px] text-[#424753] font-semibold uppercase mb-2">Approved Ready</p>
+          <p className="text-[28px] font-bold text-[#0058bd]">{approved.length}</p>
         </div>
-
-        {/* Active Batches */}
-        <div className="lg:col-span-8 bg-white rounded-xl p-6 shadow-[0_1px_3px_rgba(0,0,0,0.12)] border border-[#c2c6d5]">
-          <h2 className="text-[20px] font-medium leading-7 text-[#191b22] mb-5">Active Batches</h2>
-          <div className="flex flex-col gap-4">
-            {batches.map((b) => (
-              <div key={b.id} className="bg-[#f9f9ff] rounded-lg border border-[#c2c6d5] p-5 hover:border-[#0058bd] transition-colors">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
-                  <div className="flex items-center gap-3">
-                    <div className={`w-11 h-11 rounded-lg ${b.iconBg} flex items-center justify-center shrink-0`}>
-                      <b.icon className={`w-5 h-5 ${b.iconColor}`} />
-                    </div>
-                    <div>
-                      <p className="text-[11px] font-bold text-[#424753] tracking-wider">BATCH ID: {b.id}</p>
-                      <p className="text-[16px] font-bold text-[#191b22] leading-6">{b.name}</p>
-                    </div>
-                  </div>
-                  <div className="sm:text-right">
-                    <p className="font-mono text-[18px] font-bold text-[#191b22]">{b.amount}</p>
-                    <p className="text-[12px] text-[#424753]">{b.count} Beneficiaries</p>
-                  </div>
-                </div>
-                <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-                  <div className="flex-1">
-                    <div className="flex justify-between text-[12px] mb-1.5">
-                      <span className={`font-bold ${b.statusColor}`}>{b.status}</span>
-                      <span className="text-[#424753]">{b.verified} / {b.count} Verified</span>
-                    </div>
-                    <div className="h-2 w-full bg-[#e7e7f1] rounded-full overflow-hidden">
-                      <div className="h-full bg-[#0058bd] rounded-full" style={{ width: `${b.progress}%` }} />
-                    </div>
-                  </div>
-                  <button className="px-5 py-2 bg-[#e7e7f1] text-[#191b22] rounded-lg font-bold text-[12px] hover:bg-[#c2c6d5] transition-colors shrink-0">
-                    Details
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
+        <div className="bg-white rounded-xl p-4 shadow-sm border border-[#c2c6d5]">
+          <p className="text-[12px] text-[#424753] font-semibold uppercase mb-2">Pending Review</p>
+          <p className="text-[28px] font-bold text-[#8f4a00]">{pending.length}</p>
         </div>
-        
-        {/* Approved beneficiaries summary */}
-        <div className="lg:col-span-4 bg-white rounded-xl p-6 shadow-[0_1px_3px_rgba(0,0,0,0.12)] border border-[#c2c6d5]">
-          <h3 className="text-lg font-bold mb-4">Ready for Payout</h3>
-          {approved.length === 0 ? (
-            <div className="text-sm text-muted">No approved beneficiaries yet.</div>
-          ) : (
-            <div className="flex flex-col gap-3">
-              {approved.slice(0, 10).map((a) => (
-                <div key={a.id} className="p-3 rounded border bg-[#f8fafc] flex items-center justify-between">
-                  <div>
-                    <div className="font-medium">{a.fullName}</div>
-                    <div className="text-xs text-[#58606a]">{a.bank} • {a.accountMasked}</div>
-                  </div>
-                  <div className="text-xs text-[#0058bd] font-bold">Ready</div>
-                </div>
-              ))}
-              {approved.length > 10 && <div className="text-xs text-muted">And {approved.length - 10} more...</div>}
-            </div>
-          )}
+        <div className="bg-white rounded-xl p-4 shadow-sm border border-[#c2c6d5]">
+          <p className="text-[12px] text-[#424753] font-semibold uppercase mb-2">Flagged</p>
+          <p className="text-[28px] font-bold text-[#ba1a1a]">{review.length}</p>
         </div>
       </div>
 
-      {/* Completed Payouts Table */}
-      <div className="bg-white rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.12)] border border-[#c2c6d5] overflow-hidden">
-        <div className="px-6 py-5 border-b border-[#c2c6d5] flex items-center justify-between">
-          <h2 className="text-[20px] font-medium leading-7 text-[#191b22]">Recent Completed Payouts</h2>
-          <div className="flex gap-2">
-            <button className="p-2 rounded-lg border border-[#c2c6d5] hover:bg-[#f2f3fd] transition-colors">
-              <Filter className="w-4 h-4 text-[#424753]" />
-            </button>
-            <button className="p-2 rounded-lg border border-[#c2c6d5] hover:bg-[#f2f3fd] transition-colors">
-              <Download className="w-4 h-4 text-[#424753]" />
-            </button>
-          </div>
+      {/* Approved Beneficiaries Table */}
+      <div className="bg-white rounded-xl shadow-sm border border-[#c2c6d5] overflow-hidden">
+        <div className="px-6 py-5 border-b border-[#c2c6d5] flex items-center justify-between bg-[#f9f9ff]">
+          <h2 className="text-[18px] font-bold text-[#191b22]">Approved Beneficiaries - Ready for Payout</h2>
+          <span className="inline-flex items-center gap-1 px-3 py-1 bg-green-100 text-green-800 text-[11px] font-bold rounded-full">
+            <CheckCircle2 className="w-3 h-3" /> {approved.length} Ready
+          </span>
         </div>
 
-        {/* Desktop table */}
-        <div className="hidden md:block overflow-x-auto">
-          <table className="w-full text-left">
-            <thead>
-              <tr className="bg-[#f2f3fd] border-b border-[#c2c6d5]">
-                {['Batch ID / Name', 'Completed Date', 'Recipients', 'Total Amount', 'Status'].map((h) => (
-                  <th key={h} className="px-6 py-4 text-[12px] font-bold tracking-[0.05em] text-[#424753] uppercase">
-                    {h}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-[#c2c6d5]">
-              {completedPayouts.map((p) => (
-                <tr key={p.id} className="hover:bg-[#f9f9ff] transition-colors">
-                  <td className="px-6 py-4">
-                    <p className="font-bold text-[14px] text-[#191b22]">{p.name}</p>
-                    <p className="font-mono text-[12px] text-[#424753]">{p.id}</p>
-                  </td>
-                  <td className="px-6 py-4 text-[14px] text-[#424753]">{p.date}</td>
-                  <td className="px-6 py-4 font-bold text-[14px] text-[#191b22]">{p.recipients}</td>
-                  <td className="px-6 py-4 font-mono font-bold text-[14px] text-[#191b22]">{p.amount}</td>
-                  <td className="px-6 py-4">
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-100 text-green-800 text-[11px] font-bold">
-                      <CheckCircle2 className="w-3.5 h-3.5" /> Settled
-                    </span>
-                  </td>
+        {approved.length === 0 ? (
+          <div className="p-8 text-center">
+            <p className="text-[14px] text-[#424753]">No approved beneficiaries yet. Verify submissions to show here.</p>
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-left">
+              <thead className="bg-[#f2f3fd] border-b border-[#c2c6d5]">
+                <tr>
+                  {['Name', 'Bank', 'Account', 'Program', 'Amount', 'Action'].map((h) => (
+                    <th key={h} className="px-6 py-4 text-[12px] font-bold text-[#424753] uppercase tracking-wider">
+                      {h}
+                    </th>
+                  ))}
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Mobile cards */}
-        <div className="md:hidden divide-y divide-[#c2c6d5]">
-          {completedPayouts.map((p) => (
-            <div key={p.id} className="px-4 py-4">
-              <div className="flex items-start justify-between">
-                <div>
-                  <p className="font-bold text-[14px] text-[#191b22]">{p.name}</p>
-                  <p className="font-mono text-[11px] text-[#424753] mt-0.5">{p.id}</p>
-                </div>
-                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-green-100 text-green-800 text-[10px] font-bold shrink-0 ml-3">
-                  <CheckCircle2 className="w-3 h-3" /> Settled
-                </span>
-              </div>
-              <div className="flex items-center justify-between mt-3">
-                <span className="text-[12px] text-[#424753]">{p.date}</span>
-                <span className="font-mono font-bold text-[14px] text-[#191b22]">{p.amount}</span>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <div className="px-6 py-4 border-t border-[#c2c6d5] text-center">
-          <button className="text-[#0058bd] font-bold text-[12px] tracking-[0.05em] hover:underline">
-            Load More History
-          </button>
-        </div>
+              </thead>
+              <tbody className="divide-y divide-[#c2c6d5]">
+                {approved.map((s) => (
+                  <tr key={s.id} className="hover:bg-[#f9f9ff] transition-colors">
+                    <td className="px-6 py-4">
+                      <p className="font-semibold text-[14px] text-[#191b22]">{s.fullName}</p>
+                      <p className="text-[11px] text-[#424753]">{s.email || s.userId.slice(0, 8)}</p>
+                    </td>
+                    <td className="px-6 py-4 text-[14px] text-[#191b22] font-mono">{s.bank}</td>
+                    <td className="px-6 py-4 text-[14px] font-mono text-[#191b22]">{s.accountMasked}</td>
+                    <td className="px-6 py-4 text-[14px] text-[#191b22]">{s.programName || 'Unassigned'}</td>
+                    <td className="px-6 py-4 font-bold text-[14px] text-[#0058bd]">₦50,000</td>
+                    <td className="px-6 py-4 text-right">
+                      <button
+                        onClick={() => handleDisburse(s)}
+                        disabled={disbursingId === s.id}
+                        className="flex items-center gap-2 px-3 py-2 bg-[#0058bd] text-white rounded font-semibold text-[12px] hover:bg-[#003d8f] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {disbursingId === s.id ? (
+                          <>
+                            <Loader className="w-3 h-3 animate-spin" />
+                            Sending...
+                          </>
+                        ) : (
+                          <>
+                            <Send className="w-3 h-3" />
+                            Disburse
+                          </>
+                        )}
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
+
+      {/* Status Alerts */}
+      {disburseError && (
+        <div className="flex items-start gap-3 p-4 rounded-lg bg-[#ffdad6] border border-[#ba1a1a]/30">
+          <AlertCircle className="w-5 h-5 text-[#ba1a1a] mt-0.5 flex-shrink-0" />
+          <div>
+            <p className="font-semibold text-[#ba1a1a] text-sm">Transfer Error</p>
+            <p className="text-[12px] text-[#ba1a1a] mt-1">{disburseError}</p>
+          </div>
+        </div>
+      )}
+
+      {disburseSuccess && (
+        <div className="flex items-start gap-3 p-4 rounded-lg bg-green-100 border border-green-300">
+          <CheckCircle2 className="w-5 h-5 text-green-700 mt-0.5 flex-shrink-0" />
+          <div>
+            <p className="font-semibold text-green-800 text-sm">Transfer Initiated</p>
+            <p className="text-[12px] text-green-700 mt-1">{disburseSuccess}</p>
+          </div>
+        </div>
+      )}
+
+      {/* Additional sections would go here */}
     </>
   );
 }
