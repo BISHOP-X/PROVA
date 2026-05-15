@@ -1,6 +1,7 @@
 import 'jsr:@supabase/functions-js/edge-runtime.d.ts'
 import { failure, handleOptions, json, readBody } from '../_shared/http.ts'
 import { runVerificationPipelineForBeneficiary } from '../_shared/pipeline.ts'
+import { lookupSquadAccount } from '../_shared/squad.ts'
 import { createServiceRoleClient } from '../_shared/supabase.ts'
 
 interface SubmitBeneficiaryRequest {
@@ -49,6 +50,12 @@ Deno.serve(async (request) => {
     const organizationName = payload.organizationName?.trim() || 'Squad Hackathon Foundation'
     const programType = payload.programType?.trim() || 'Scholarship'
     const supabase = createServiceRoleClient()
+    const accountLookup = await lookupSquadAccount({
+      accountNameHint: payload.bankName?.trim() || undefined,
+      accountNumber,
+      bankCode,
+      fullName,
+    })
 
     const { data: existingProgram, error: existingProgramError } = await supabase
       .from('programs')
@@ -84,7 +91,7 @@ Deno.serve(async (request) => {
     const { data: beneficiary, error: beneficiaryError } = await supabase
       .from('beneficiaries')
       .insert({
-        account_name_lookup: payload.bankName?.trim() || null,
+        account_name_lookup: accountLookup.accountName,
         account_number: accountNumber,
         bank_code: bankCode,
         email: payload.email?.trim() || null,
@@ -116,6 +123,7 @@ Deno.serve(async (request) => {
       entity_id: beneficiary.id,
       event_type: 'beneficiary.submitted',
       payload: {
+        accountLookupMode: accountLookup.mode,
         bankCode,
         programId: program.id,
         referenceId,
@@ -133,6 +141,7 @@ Deno.serve(async (request) => {
         accountLast4: accountNumber.slice(-4),
         applicationId: beneficiary.id,
         decision: verification.decision,
+        providerMode: accountLookup.mode,
         program: {
           name: program.name,
           organizationName: program.organization_name,

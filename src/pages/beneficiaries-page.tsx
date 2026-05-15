@@ -7,6 +7,7 @@ import { listBeneficiaries } from '@/lib/api';
 const statusBadge: Record<string, string> = {
   approved: 'bg-green-100 text-green-800',
   draft: 'bg-[#e1e2eb] text-[#424753]',
+  pending: 'bg-[#e7e7f1] text-[#424753]',
   rejected: 'bg-[#ffdad6] text-[#ba1a1a]',
   review: 'bg-[#ffdcc4] text-[#8f4a00]',
   submitted: 'bg-[#d8e2ff] text-[#0058bd]',
@@ -15,6 +16,7 @@ const statusBadge: Record<string, string> = {
 const statusIcon: Record<string, React.ReactNode> = {
   approved: <CheckCircle2 className="w-3 h-3" />,
   draft: <Clock3 className="w-3 h-3" />,
+  pending: <Clock3 className="w-3 h-3" />,
   rejected: <ShieldAlert className="w-3 h-3" />,
   review: <ShieldAlert className="w-3 h-3" />,
   submitted: <Clock3 className="w-3 h-3" />,
@@ -43,10 +45,11 @@ function formatDate(value: string | null) {
   }).format(new Date(value));
 }
 
-function statusLabel(status: 'draft' | 'submitted' | 'approved' | 'review' | 'rejected') {
+function statusLabel(status: 'draft' | 'pending' | 'submitted' | 'approved' | 'review' | 'rejected') {
   const labels = {
     approved: 'Approved',
     draft: 'Draft',
+    pending: 'Queued',
     rejected: 'Action Required',
     review: 'In Review',
     submitted: 'Pending',

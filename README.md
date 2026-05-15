@@ -2,6 +2,10 @@
 
 PROVA is an AI-verified disbursement engine for institutions that send money to people.
 
+For this hackathon, PROVA should be treated as a polished proof of concept, not a production-ready rollout.
+
+The goal is to make the core idea feel obvious, exciting, and credible in a live demo.
+
 Our first deployment is scholarship and stipend payouts, where fake beneficiaries, duplicate identities, incorrect bank details, and weak manual review can cause real financial loss.
 
 Instead of paying first and auditing later, PROVA verifies the beneficiary, assigns a trust decision, and only then releases funds through Squad.
@@ -84,6 +88,10 @@ Our technical contribution is the product and system design around those service
 That is the real engineering work.
 
 ## Proposed MVP
+
+This MVP is intentionally demo-first.
+
+It should look sharp, tell one clear story, and prove the trust-before-payout concept without drowning the judges in infrastructure detail.
 
 ### Admin Side
 
@@ -207,6 +215,17 @@ The live demo should be one simple story:
 
 That gives judges a clear end-to-end experience with real intelligence and real payment movement.
 
+The demo should feel premium and believable, but it does not need to prove full production depth.
+
+If we need to choose, we should favor:
+
+- better visuals
+- clearer state transitions
+- smoother presentation flow
+- tighter storytelling
+
+over hidden technical completeness that judges will not see.
+
 ## What We Should Avoid
 
 - Trying to serve five industries in one demo
@@ -214,6 +233,8 @@ That gives judges a clear end-to-end experience with real intelligence and real 
 - Claiming we built custom AI models if we did not
 - Overstuffing the MVP with direct debit, VAS, payroll, and NGO logic all at once
 - Building a chat app instead of a verification and payout system
+- Turning the hackathon build into a production platform roadmap
+- Spending demo time on backend depth that is invisible to judges
 
 ## Success Standard
 

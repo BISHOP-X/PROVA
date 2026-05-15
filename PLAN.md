@@ -8,6 +8,22 @@ Its job is to keep the product, implementation order, and teammate responsibilit
 
 If new ideas come up during implementation, they do not go straight into the build. They first get evaluated against this plan.
 
+## Hackathon Reality Check
+
+This is a hackathon demo, not a production launch.
+
+The job of the build is to make judges immediately understand three things:
+
+1. the product looks strong
+2. the flow is believable
+3. the concept can clearly work in the real world
+
+That means we optimize for demo clarity, visual polish, and a convincing proof of concept.
+
+We do not optimize for production completeness, deep infrastructure, or every possible integration edge case.
+
+If a feature adds engineering depth but does not improve the demo story, it is not a priority.
+
 ## Non-Negotiable Product Scope
 
 PROVA is an AI-verified disbursement platform.
@@ -63,6 +79,28 @@ By the end of this plan, the demo must support one believable end-to-end story:
 
 The MVP does not need full production robustness. It does need a coherent end-to-end story with real state changes.
 
+## Demo-First Guardrails
+
+The winning version of this project should feel like a very polished concept proof.
+
+That means:
+
+- the UI should feel premium and presentation-ready
+- the core flow should be easy to explain in under two minutes
+- the data flow should look credible even when parts are controlled for demo purposes
+- the app should show the main trust-decision story without exposing unnecessary operational complexity
+
+That also means we should avoid spending hackathon time on:
+
+- production-grade auth flows unless they directly improve the demo
+- full resilience and recovery systems
+- complete webhook coverage
+- heavy background job architecture
+- advanced permissions models beyond what the demo actually needs
+- integrations that do not visibly improve the proof of concept
+
+Controlled mocks, demo-safe shortcuts, and guided happy-path flows are acceptable if they make the concept clearer and more impressive.
+
 ## Team Roles
 
 There are three contributors:
@@ -109,6 +147,7 @@ There are three contributors:
 - Every non-trivial change should preserve build health.
 - Prefer small, reviewable PRs or branch updates over giant unreviewed dumps.
 - Keep naming consistent with the product docs.
+- When forced to choose between deeper engineering and a stronger demo, choose the stronger demo.
 
 ### Rules for frontend work
 
@@ -117,6 +156,7 @@ There are three contributors:
 - Use shared layout and component patterns instead of page-by-page duplication.
 - Every screen must have loading, error, and empty states before it is considered complete.
 - Keep routes aligned with the product flow, not just visual mockups.
+- Spend most of the design effort on screens judges will actually see during the demo.
 
 ### Rules for backend work
 
@@ -125,6 +165,7 @@ There are three contributors:
 - Save important state transitions to the database.
 - Write database changes in a way the frontend can consume cleanly.
 - Prefer simple, explicit workflows over over-engineered abstractions.
+- If a backend path is not visible in the demo, keep it minimal or defer it.
 
 ### Rules for full-stack integration
 
@@ -133,6 +174,12 @@ There are three contributors:
 - Before demo day, all critical screens must use real backend data for the main flow.
 
 ## Delivery Phases
+
+The phases below should be interpreted with a demo-first bias.
+
+The question for every phase is not "how complete can we make this?"
+
+It is "what is the smallest convincing version that will look strong in front of judges?"
 
 ## Phase 1: Stabilize The UI Foundation
 
@@ -185,7 +232,7 @@ Must include:
 
 - core tables for profiles, beneficiaries, verification results, payout batches, payout items, and audit events
 - storage buckets for documents/selfies if used in the demo
-- basic auth model for admin and beneficiary access
+- only the minimum auth or access model required for the demo
 
 Done when:
 
@@ -249,10 +296,11 @@ Connect approved beneficiaries to payout execution.
 
 Must include:
 
-- account lookup before payout
-- transfer trigger for approved payout items
-- transfer status requery or result tracking
-- audit event creation for payout actions
+- the smallest believable payout flow using Squad endpoints
+- account lookup before payout if shown in the demo
+- transfer trigger for approved payout items if shown in the demo
+- enough payout state tracking to make the story credible on-screen
+- audit event creation for the visible payout actions
 
 Done when:
 

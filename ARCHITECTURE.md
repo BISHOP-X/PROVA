@@ -6,6 +6,12 @@ We will build the MVP with a Supabase-first architecture.
 
 This is the fastest stack that still gives us a serious backend, secure integrations, clean data modeling, and live observability.
 
+For hackathon purposes, this architecture is a demo vehicle first.
+
+We only need enough backend depth to support a believable on-screen flow and a strong presentation.
+
+We do not need to fully productionize every part of the system during the hackathon window.
+
 ### Final Stack
 
 - Frontend: React + TypeScript + Tailwind CSS + shadcn/ui
@@ -35,6 +41,10 @@ This is the fastest stack that still gives us a serious backend, secure integrat
 - Auth gives us user accounts for admins and beneficiaries
 - Realtime can update verification and payout status without building extra infrastructure
 
+The key point is speed-to-demo.
+
+Supabase lets us show real state changes quickly without building a large custom backend that judges will never directly appreciate.
+
 ### Render
 
 Render is not required for the MVP backend.
@@ -63,6 +73,8 @@ flowchart TD
     W --> D
     D --> A
 ```
+
+In the hackathon version, parts of this flow may be simplified or controlled as long as the trust-decision-to-payout story remains clear and convincing.
 
 ## Product Modules
 
@@ -248,7 +260,19 @@ Example decision logic:
 
 This is technically credible, explainable, and fast to build.
 
+That is the right level of depth for this hackathon.
+
+The goal is not to prove maximum AI sophistication.
+
+The goal is to prove that an interpretable trust layer before payout is useful, believable, and ready for deeper implementation later.
+
 ## API And Webhook Design
+
+These integration surfaces should stay as small as possible for the hackathon build.
+
+Only flows that materially improve the demo should be implemented end-to-end.
+
+Everything else can remain simplified, deferred, or represented through controlled demo paths.
 
 ### Core Edge Functions
 

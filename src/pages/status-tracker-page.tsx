@@ -27,10 +27,11 @@ function formatTimestamp(value: string | null) {
   }).format(new Date(value));
 }
 
-function statusTitle(status: 'draft' | 'submitted' | 'approved' | 'review' | 'rejected') {
+function statusTitle(status: 'draft' | 'pending' | 'submitted' | 'approved' | 'review' | 'rejected') {
   const labels = {
     approved: 'Approved for Payout',
     draft: 'Draft Application',
+    pending: 'Queued for Verification',
     rejected: 'Action Required',
     review: 'Manual Review Required',
     submitted: 'Verification in Progress',
@@ -39,10 +40,11 @@ function statusTitle(status: 'draft' | 'submitted' | 'approved' | 'review' | 're
   return labels[status];
 }
 
-function statusBadge(status: 'draft' | 'submitted' | 'approved' | 'review' | 'rejected') {
+function statusBadge(status: 'draft' | 'pending' | 'submitted' | 'approved' | 'review' | 'rejected') {
   const labels = {
     approved: 'Ready for disbursement',
     draft: 'Incomplete submission',
+    pending: 'Waiting to enter the AI queue',
     rejected: 'Needs correction',
     review: 'Under compliance review',
     submitted: 'Automated checks running',
@@ -232,6 +234,28 @@ export function StatusTrackerPage() {
                   <span>Liveness score: <strong className="text-surface-on">{data.verification.livenessScore}</strong></span>
                   <span>Face match score: <strong className="text-surface-on">{data.verification.faceMatchScore}</strong></span>
                   <span>Risk score: <strong className="text-surface-on">{data.verification.riskScore}</strong></span>
+                </div>
+              </div>
+            ) : null}
+            {data?.payout ? (
+              <div>
+                <div className="font-label-md text-[10px] font-semibold text-surface-on-variant uppercase tracking-wider mb-1">Payout Status</div>
+                <div className="rounded-lg border border-outline-variant/20 bg-surface px-3 py-3 text-sm text-surface-on-variant flex flex-col gap-1">
+                  <span>Amount: <strong className="text-surface-on">{new Intl.NumberFormat('en-US', { style: 'currency', currency: 'NGN', maximumFractionDigits: 0 }).format(data.payout.amount)}</strong></span>
+                  <span>Rail state: <strong className="capitalize text-surface-on">{data.payout.squadStatus}</strong></span>
+                  <span>Released: <strong className="text-surface-on">{formatTimestamp(data.payout.releasedAt)}</strong></span>
+                </div>
+              </div>
+            ) : null}
+            {data?.verification?.reasonCodes?.length ? (
+              <div>
+                <div className="font-label-md text-[10px] font-semibold text-surface-on-variant uppercase tracking-wider mb-1">Decision Reasons</div>
+                <div className="flex flex-wrap gap-2">
+                  {data.verification.reasonCodes.map((reasonCode) => (
+                    <span className="rounded-full border border-outline-variant/30 bg-surface px-2.5 py-1 text-[11px] text-surface-on-variant" key={reasonCode}>
+                      {reasonCode.replaceAll('_', ' ')}
+                    </span>
+                  ))}
                 </div>
               </div>
             ) : null}

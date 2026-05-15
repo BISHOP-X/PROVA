@@ -1,5 +1,9 @@
 import { isSupabaseConfigured, supabase } from '@/lib/supabase'
 
+export type BeneficiaryWorkflowStatus = 'draft' | 'pending' | 'submitted' | 'approved' | 'review' | 'rejected'
+export type ReviewAction = 'approve' | 'review' | 'reject'
+export type SquadPayoutStatus = 'pending' | 'queued' | 'processing' | 'successful' | 'failed'
+
 export interface AdminDashboardResponse {
   metrics: {
     activePrograms: number
@@ -33,7 +37,7 @@ export interface BeneficiaryListResponse {
     programName: string
     referenceId: string
     riskLevel: 'Low' | 'Medium' | 'High'
-    status: 'draft' | 'submitted' | 'approved' | 'review' | 'rejected'
+    status: BeneficiaryWorkflowStatus
   }>
   summary: {
     flagged: number
@@ -46,6 +50,7 @@ export interface SubmitBeneficiaryPayload {
   accountNumber: string
   bankCode: string
   bankName?: string
+  documentFilePath?: string
   email?: string
   fullName: string
   organizationName?: string
@@ -53,12 +58,14 @@ export interface SubmitBeneficiaryPayload {
   programName?: string
   programType?: string
   referenceId: string
+  selfieFilePath?: string
 }
 
 export interface SubmitBeneficiaryResponse {
   accountLast4: string
   applicationId: string
   decision: 'approved' | 'review' | 'rejected'
+  providerMode: 'mock' | 'live'
   program: {
     name: string
     organizationName: string
@@ -69,10 +76,15 @@ export interface SubmitBeneficiaryResponse {
 }
 
 export interface BeneficiaryStatusResponse {
+  auditTrail: Array<{
+    created_at: string
+    event_type: string
+    payload: Record<string, unknown>
+  }>
   applicationId: string
   beneficiary: {
     accountLast4: string
-    currentStatus: 'draft' | 'submitted' | 'approved' | 'review' | 'rejected'
+    currentStatus: BeneficiaryWorkflowStatus
     fullName: string
     organizationName: string
     programName: string
@@ -82,7 +94,7 @@ export interface BeneficiaryStatusResponse {
   payout: {
     amount: number
     releasedAt: string | null
-    squadStatus: string
+    squadStatus: SquadPayoutStatus | string
   } | null
   timeline: Array<{
     description: string
@@ -99,6 +111,148 @@ export interface BeneficiaryStatusResponse {
     reasonCodes: string[]
     riskScore: number
   } | null
+}
+
+export interface VerificationQueueResponse {
+  queue: Array<{
+    accountName: string | null
+    accountNumberLast4: string
+    bankCode: string
+    decision: 'approved' | 'review' | 'rejected' | null
+    documentScore: number | null
+    faceMatchScore: number | null
+    fullName: string
+    hasDocument: boolean
+    hasSelfie: boolean
+    id: string
+    livenessScore: number | null
+    organizationName: string
+    payoutStatus: SquadPayoutStatus | null
+    programName: string
+    programType: string
+    providerMode: 'mock' | 'live' | string
+    reasonCodes: string[]
+    referenceId: string
+    reviewNotes: string | null
+    riskScore: number | null
+    status: BeneficiaryWorkflowStatus
+    submittedAt: string
+    updatedAt: string
+    verificationCreatedAt: string | null
+  }>
+  summary: {
+    approvedCount: number
+    flaggedCount: number
+    pendingCount: number
+    total: number
+  }
+}
+
+export interface ReviewBeneficiaryResponse {
+  beneficiaryId: string
+  decision: 'approved' | 'review' | 'rejected'
+  notes: string
+  reviewResultId: string
+  status: BeneficiaryWorkflowStatus
+}
+
+export interface DisbursementDashboardResponse {
+  activeBatches: Array<{
+    batchName: string
+    beneficiaryCount: number
+    failedCount: number
+    id: string
+    releasedCount: number
+    status: 'draft' | 'ready' | 'processing' | 'completed' | 'failed'
+    totalAmount: number
+    updatedAt: string
+  }>
+  balance: {
+    amount: number
+    currency: string
+    lastUpdatedAt: string
+    message: string
+    mode: 'mock' | 'live'
+  }
+  providerMode: 'mock' | 'live'
+  readyItems: Array<{
+    accountName: string | null
+    accountNumberLast4: string
+    amount: number | null
+    bankCode: string
+    beneficiaryId: string
+    decision: 'approved' | 'review' | 'rejected'
+    fullName: string
+    latestPayoutStatus: SquadPayoutStatus | null
+    organizationName: string
+    programName: string
+    referenceId: string
+    riskScore: number | null
+  }>
+  recentPayouts: Array<{
+    amount: number
+    batchId: string
+    batchName: string
+    beneficiaryId: string
+    fullName: string
+    id: string
+    releasedAt: string | null
+    squadStatus: SquadPayoutStatus
+    transactionReference: string | null
+    updatedAt: string
+  }>
+  summary: {
+    completedCount: number
+    processingCount: number
+    readyCount: number
+    totalReadyAmount: number
+  }
+}
+
+export interface ReleaseApprovedPayoutsResponse {
+  batches: Array<{
+    batchId: string
+    batchName: string
+    beneficiaryCount: number
+    status: 'draft' | 'ready' | 'processing' | 'completed' | 'failed'
+    totalAmount: number
+  }>
+  processed: Array<{
+    amount: number
+    beneficiaryId: string
+    fullName: string
+    payoutItemId: string
+    providerMessage: string
+    squadStatus: SquadPayoutStatus
+    transactionReference: string | null
+  }>
+  providerMode: 'mock' | 'live'
+  summary: {
+    failedCount: number
+    processedCount: number
+    processingCount: number
+    queuedCount: number
+    successfulCount: number
+  }
+}
+
+export interface AuditEventsResponse {
+  meta: {
+    limit: number
+    total: number
+  }
+  records: Array<{
+    actorName: string
+    createdAt: string
+    details: string
+    entityId: string | null
+    entityType: string
+    eventType: string
+    hash: string
+    id: string
+    payload: Record<string, unknown>
+    severity: 'info' | 'warn' | 'critical'
+  }>
 }
 
 async function invokeFunction<TResponse>(
@@ -139,4 +293,34 @@ export function submitBeneficiaryVerification(payload: SubmitBeneficiaryPayload)
 
 export function getBeneficiaryStatus(applicationId: string) {
   return invokeFunction<BeneficiaryStatusResponse>('get-beneficiary-status', { applicationId })
+}
+
+export function getVerificationQueue() {
+  return invokeFunction<VerificationQueueResponse>('get-verification-queue')
+}
+
+export function reviewBeneficiary(payload: {
+  action: ReviewAction
+  beneficiaryId: string
+  notes: string
+}) {
+  return invokeFunction<ReviewBeneficiaryResponse>('review-beneficiary', payload)
+}
+
+export function getDisbursementDashboard() {
+  return invokeFunction<DisbursementDashboardResponse>('get-disbursement-dashboard')
+}
+
+export function releaseApprovedPayouts(payload?: { beneficiaryIds?: string[] }) {
+  return invokeFunction<ReleaseApprovedPayoutsResponse>('release-approved-payouts', payload ?? {})
+}
+
+export function listAuditEvents(payload?: {
+  eventType?: string
+  from?: string
+  limit?: number
+  severity?: 'critical' | 'info' | 'warn'
+  to?: string
+}) {
+  return invokeFunction<AuditEventsResponse>('list-audit-events', payload ?? {})
 }

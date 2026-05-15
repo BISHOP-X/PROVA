@@ -14,7 +14,7 @@ interface BeneficiaryRecord {
   email: string | null
   phone: string | null
   student_identifier: string
-  status: 'draft' | 'submitted' | 'approved' | 'review' | 'rejected'
+  status: 'draft' | 'pending' | 'submitted' | 'approved' | 'review' | 'rejected'
   created_at: string
   updated_at: string
   program: ProgramRecord | ProgramRecord[] | null
@@ -178,7 +178,7 @@ Deno.serve(async (request) => {
       flagged: responsePayload.filter(
         (beneficiary) => beneficiary.riskLevel === 'High' || beneficiary.status === 'rejected',
       ).length,
-      pendingReview: responsePayload.filter((beneficiary) => ['submitted', 'review'].includes(beneficiary.status)).length,
+      pendingReview: responsePayload.filter((beneficiary) => ['pending', 'submitted', 'review'].includes(beneficiary.status)).length,
       totalActive: responsePayload.filter((beneficiary) => beneficiary.status !== 'rejected').length,
     }
 

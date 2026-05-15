@@ -157,6 +157,7 @@ export function computeVerificationScores(
       duplicateAccountCount: input.duplicateAccountCount,
       engine: 'prova-demo-risk-engine-v1',
       generatedAt: new Date().toISOString(),
+      providerMode: 'mock',
       thresholds,
     },
   }

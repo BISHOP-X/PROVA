@@ -5,7 +5,7 @@ import {
   type VerificationRule,
 } from './scoring.ts'
 
-type BeneficiaryStatus = 'approved' | 'review' | 'rejected'
+type BeneficiaryStatus = 'approved' | 'pending' | 'review' | 'rejected'
 
 interface PipelineResult {
   beneficiaryId: string

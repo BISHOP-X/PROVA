@@ -12,7 +12,7 @@ interface BeneficiaryRecord {
   id: string
   full_name: string
   student_identifier: string
-  status: 'draft' | 'submitted' | 'approved' | 'review' | 'rejected'
+  status: 'draft' | 'pending' | 'submitted' | 'approved' | 'review' | 'rejected'
   created_at: string
   updated_at: string
   program: ProgramRecord | ProgramRecord[] | null
@@ -109,7 +109,7 @@ Deno.serve(async (request) => {
 
     const totalBeneficiaries = beneficiaries.length
     const pendingVerifications = beneficiaries.filter((beneficiary) =>
-      ['submitted', 'review'].includes(beneficiary.status),
+      ['pending', 'submitted', 'review'].includes(beneficiary.status),
     ).length
     const approvedBeneficiaries = beneficiaries.filter((beneficiary) => beneficiary.status === 'approved').length
     const activePrograms = programsResponse.data?.length ?? 0

@@ -18,7 +18,7 @@ interface BeneficiaryRecord {
   student_identifier: string
   bank_code: string
   account_number: string
-  status: 'draft' | 'submitted' | 'approved' | 'review' | 'rejected'
+  status: 'draft' | 'pending' | 'submitted' | 'approved' | 'review' | 'rejected'
   created_at: string
   updated_at: string
   program: ProgramRecord | ProgramRecord[] | null
@@ -168,6 +168,8 @@ Deno.serve(async (request) => {
               ? 'The beneficiary has been approved for payout release.'
               : typedBeneficiary.status === 'rejected'
                 ? 'The application was rejected by the verification policy.'
+                : typedBeneficiary.status === 'pending'
+                  ? 'Your submission is queued for verification.'
                 : 'A reviewer step will activate only if the AI pipeline flags the application.',
         status:
           typedBeneficiary.status === 'review'

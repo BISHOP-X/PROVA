@@ -11,6 +11,15 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { submitBeneficiaryVerification, type SubmitBeneficiaryResponse } from '@/lib/api';
 
+const banks = [
+  { code: '000014', name: 'Access Bank' },
+  { code: '000016', name: 'First Bank of Nigeria' },
+  { code: '000013', name: 'GTBank Plc' },
+  { code: '000004', name: 'United Bank for Africa' },
+  { code: '000015', name: 'Zenith Bank Plc' },
+  { code: '090267', name: 'Kuda Microfinance Bank' },
+];
+
 export function OnboardingPage() {
   const [latestSubmission, setLatestSubmission] = useState<SubmitBeneficiaryResponse | null>(null);
   const submissionMutation = useMutation({
@@ -24,11 +33,16 @@ export function OnboardingPage() {
     event.preventDefault();
 
     const formData = new FormData(event.currentTarget);
+    const bankCode = String(formData.get('bankCode') ?? '');
+    const selectedBank = banks.find((bank) => bank.code === bankCode);
+    const includeDocument = formData.get('includeDocument') === 'on';
+    const includeSelfie = formData.get('includeSelfie') === 'on';
 
     submissionMutation.mutate({
       accountNumber: String(formData.get('accountNumber') ?? ''),
-      bankCode: String(formData.get('bankCode') ?? ''),
-      bankName: String(formData.get('bankCode') ?? ''),
+      bankCode,
+      bankName: selectedBank?.name ?? '',
+      documentFilePath: includeDocument ? `demo-documents/${Date.now()}-${String(formData.get('referenceId') ?? 'beneficiary')}.pdf` : undefined,
       email: String(formData.get('email') ?? ''),
       fullName: String(formData.get('fullName') ?? ''),
       organizationName: String(formData.get('organizationName') ?? ''),
@@ -36,6 +50,7 @@ export function OnboardingPage() {
       programName: String(formData.get('programName') ?? ''),
       programType: String(formData.get('programType') ?? ''),
       referenceId: String(formData.get('referenceId') ?? ''),
+      selfieFilePath: includeSelfie ? `demo-selfies/${Date.now()}-${String(formData.get('referenceId') ?? 'beneficiary')}.jpg` : undefined,
     });
   }
 
@@ -72,6 +87,9 @@ export function OnboardingPage() {
               <p className="text-surface-on-variant mt-1">
                 Decision: <span className="font-semibold capitalize text-surface-on">{latestSubmission.decision}</span>.
                 Reference: <span className="font-mono text-surface-on"> {latestSubmission.applicationId}</span>
+              </p>
+              <p className="text-surface-on-variant mt-1">
+                Squad account lookup mode: <span className="font-semibold capitalize text-surface-on">{latestSubmission.providerMode}</span>
               </p>
             </div>
             <div className="flex flex-wrap gap-3">
@@ -196,11 +214,9 @@ export function OnboardingPage() {
                     required
                   >
                     <option className="text-outline" disabled value="">Select Institution</option>
-                    <option value="Access Bank">Access Bank</option>
-                    <option value="First Bank">First Bank</option>
-                    <option value="GTBank">GTBank</option>
-                    <option value="UBA">UBA</option>
-                    <option value="Zenith Bank">Zenith Bank</option>
+                    {banks.map((bank) => (
+                      <option key={bank.code} value={bank.code}>{bank.name}</option>
+                    ))}
                   </select>
                   <ChevronDown className="w-5 h-5 absolute right-3 top-1/2 -translate-y-1/2 text-surface-on-variant pointer-events-none" />
                 </div>
@@ -216,6 +232,26 @@ export function OnboardingPage() {
                   type="password" 
                 />
               </div>
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-5 pt-4">
+            <h2 className="font-title-lg text-xl font-medium text-surface-on border-b border-outline-variant/20 pb-2">Demo Evidence Pack</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <label className="flex items-start gap-3 rounded-lg border border-outline-variant/30 bg-surface-container-high px-4 py-4">
+                <input className="mt-1 h-4 w-4 accent-primary" defaultChecked name="includeDocument" type="checkbox" />
+                <span className="flex flex-col gap-1">
+                  <span className="font-label-md text-sm font-semibold text-surface-on">Attach demo program document</span>
+                  <span className="font-body-md text-sm text-surface-on-variant">Improves document verification and keeps the live demo on the approved path.</span>
+                </span>
+              </label>
+              <label className="flex items-start gap-3 rounded-lg border border-outline-variant/30 bg-surface-container-high px-4 py-4">
+                <input className="mt-1 h-4 w-4 accent-primary" defaultChecked name="includeSelfie" type="checkbox" />
+                <span className="flex flex-col gap-1">
+                  <span className="font-label-md text-sm font-semibold text-surface-on">Attach demo selfie capture</span>
+                  <span className="font-body-md text-sm text-surface-on-variant">Feeds the liveness and face-match stages of the verification engine even before real storage is connected.</span>
+                </span>
+              </label>
             </div>
           </div>
 
