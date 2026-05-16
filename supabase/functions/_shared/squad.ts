@@ -120,6 +120,10 @@ function mapSquadStatus(value: unknown): PayoutItemStatus {
     return 'queued'
   }
 
+  if (normalized === '000' || normalized === '00') {
+    return 'successful'
+  }
+
   if (normalized.includes('success')) {
     return 'successful'
   }
@@ -315,6 +319,8 @@ export async function transferWithSquad(
       data.status ??
       data.transaction_status ??
       data.transfer_status ??
+      data.response_code ??
+      data.response_description ??
       data.nip_status ??
       raw.status ??
       raw.message
@@ -374,6 +380,8 @@ export async function requerySquadTransfer(transactionReference: string): Promis
       data.status ??
       data.transaction_status ??
       data.transfer_status ??
+      data.response_code ??
+      data.response_description ??
       data.nip_status ??
       raw.status ??
       raw.message
