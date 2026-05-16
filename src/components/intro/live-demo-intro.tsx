@@ -30,11 +30,11 @@ const slides: Slide[] = [
     eyebrow: '01 \u00b7 The Problem',
     title: 'Institutions release money before they can verify who should receive it.',
     description: 'That creates a two-sided risk \u2014 financial leakage for the institution, and an unfair delay for the real beneficiary.',
-    orbColor: 'bg-rose-500/20',
+    orbColor: 'bg-[#ff9d2f]/18',
     accent: [
-      { label: 'Duplicate IDs', sub: '14 flagged', tone: 'border-rose-300/30 bg-rose-300/10 text-rose-100' },
-      { label: 'Bank Mismatches', sub: '09 active', tone: 'border-amber-300/30 bg-amber-300/10 text-amber-100' },
-      { label: 'Review Delays', sub: '27 open', tone: 'border-sky-300/30 bg-sky-300/10 text-sky-100' },
+      { label: 'Duplicate IDs', sub: '14 flagged', tone: 'border-[#ffb86b]/28 bg-[#ff9d2f]/12 text-[#ffe2b4]' },
+      { label: 'Bank Mismatches', sub: '09 active', tone: 'border-[#ffd28d]/24 bg-white/5 text-[#f4e4ca]' },
+      { label: 'Review Delays', sub: '27 open', tone: 'border-white/12 bg-white/5 text-[#f4e4ca]' },
     ],
   },
   {
@@ -42,10 +42,10 @@ const slides: Slide[] = [
     eyebrow: '02 \u00b7 Who It Serves',
     title: 'Two groups are caught in the middle.',
     description: 'The finance team needs confidence before they can approve a payment. The student needs a process that is fast, visible, and fair.',
-    orbColor: 'bg-blue-500/20',
+    orbColor: 'bg-[#ffb357]/16',
     accent: [
-      { label: 'Institution', sub: 'Bursars & finance teams', tone: 'border-blue-300/30 bg-blue-300/10 text-blue-100', iconType: 'building' },
-      { label: 'Beneficiary', sub: 'Students & fellows', tone: 'border-emerald-300/30 bg-emerald-300/10 text-emerald-100', iconType: 'users' },
+      { label: 'Institution', sub: 'Bursars & finance teams', tone: 'border-[#ffbf73]/28 bg-[#ff9d2f]/12 text-[#ffe2b4]', iconType: 'building' },
+      { label: 'Beneficiary', sub: 'Students & fellows', tone: 'border-white/12 bg-white/5 text-[#f4e4ca]', iconType: 'users' },
     ],
   },
   {
@@ -53,11 +53,11 @@ const slides: Slide[] = [
     eyebrow: '03 \u00b7 The Solution',
     title: 'PROVA verifies the beneficiary before the payout is approved.',
     description: 'It collects the details, checks the signals, and gives one clear decision. Nothing moves until trust is established.',
-    orbColor: 'bg-emerald-500/16',
+    orbColor: 'bg-[#ffb357]/16',
     accent: [
-      { label: 'Approved', sub: 'Payment is released', tone: 'border-emerald-300/30 bg-emerald-300/10 text-emerald-100' },
-      { label: 'Review', sub: 'Routed to the team', tone: 'border-amber-300/30 bg-amber-300/10 text-amber-100' },
-      { label: 'Rejected', sub: 'Payout is blocked', tone: 'border-rose-300/30 bg-rose-300/10 text-rose-100' },
+      { label: 'Approved', sub: 'Payment is released', tone: 'border-[#92f0bb]/24 bg-[#136e39]/16 text-[#bff6d5]' },
+      { label: 'Review', sub: 'Routed to the team', tone: 'border-[#ffbf73]/28 bg-[#ff9d2f]/12 text-[#ffe2b4]' },
+      { label: 'Rejected', sub: 'Payout is blocked', tone: 'border-[#ff8b8b]/24 bg-[#4c1717]/72 text-[#ffb4ab]' },
     ],
   },
   {
@@ -65,12 +65,12 @@ const slides: Slide[] = [
     eyebrow: '04 \u00b7 Squad Integration',
     title: 'When a beneficiary is cleared, Squad handles the rest.',
     description: 'We use Squad to confirm the destination account, trigger the transfer, and track the payout after release. Squad is the payment rail, not an afterthought.',
-    orbColor: 'bg-violet-500/16',
+    orbColor: 'bg-[#ffb357]/16',
     accent: [
-      { label: 'account/lookup', sub: 'Confirm destination', tone: 'border-violet-300/30 bg-violet-300/10 text-violet-100', isCode: true },
-      { label: 'payout/transfer', sub: 'Release approved funds', tone: 'border-blue-300/30 bg-blue-300/10 text-blue-100', isCode: true },
-      { label: 'payout/requery', sub: 'Track completion', tone: 'border-cyan-300/30 bg-cyan-300/10 text-cyan-100', isCode: true },
-      { label: 'merchant/balance', sub: 'Check balance state', tone: 'border-white/12 bg-white/5 text-slate-300', isCode: true },
+      { label: 'account/lookup', sub: 'Confirm destination', tone: 'border-[#ffbf73]/28 bg-[#ff9d2f]/12 text-[#ffe2b4]', isCode: true },
+      { label: 'payout/transfer', sub: 'Release approved funds', tone: 'border-[#ffd28d]/24 bg-white/5 text-[#f4e4ca]', isCode: true },
+      { label: 'payout/requery', sub: 'Track completion', tone: 'border-white/12 bg-white/5 text-[#f4e4ca]', isCode: true },
+      { label: 'merchant/balance', sub: 'Check balance state', tone: 'border-white/10 bg-white/4 text-[#cabaa3]', isCode: true },
     ],
   },
   {
@@ -78,12 +78,12 @@ const slides: Slide[] = [
     eyebrow: '05 \u00b7 AI Intelligence',
     title: 'The trust decision is explainable, not a black box.',
     description: 'Liveness, face match, document verification, and payout risk are scored together and combined into one trust score \u2014 with the reason shown on screen.',
-    orbColor: 'bg-indigo-500/18',
+    orbColor: 'bg-[#ffb357]/16',
     accent: [
-      { label: 'Liveness check', sub: '82', tone: 'border-sky-300/30 bg-sky-300/10 text-sky-100', progress: 82 },
-      { label: 'Face match', sub: '91', tone: 'border-emerald-300/30 bg-emerald-300/10 text-emerald-100', progress: 91 },
-      { label: 'Document scan', sub: '87', tone: 'border-violet-300/30 bg-violet-300/10 text-violet-100', progress: 87 },
-      { label: 'Payout risk', sub: '72', tone: 'border-amber-300/30 bg-amber-300/10 text-amber-100', progress: 72 },
+      { label: 'Liveness check', sub: '82', tone: 'border-white/12 bg-white/5 text-[#f4e4ca]', progress: 82 },
+      { label: 'Face match', sub: '91', tone: 'border-[#92f0bb]/24 bg-[#136e39]/16 text-[#bff6d5]', progress: 91 },
+      { label: 'Document scan', sub: '87', tone: 'border-[#ffd28d]/24 bg-white/5 text-[#f4e4ca]', progress: 87 },
+      { label: 'Payout risk', sub: '72', tone: 'border-[#ffbf73]/28 bg-[#ff9d2f]/12 text-[#ffe2b4]', progress: 72 },
     ],
   },
   {
@@ -91,7 +91,7 @@ const slides: Slide[] = [
     eyebrow: '06 \u00b7 Live Demo',
     title: 'The full product is running right now.',
     description: 'You are about to see the dashboard, a live beneficiary submission, the trust decision, and the Squad payout state \u2014 end to end.',
-    orbColor: 'bg-emerald-400/14',
+    orbColor: 'bg-[#ffb357]/16',
     accent: [],
   },
 ]
@@ -99,7 +99,7 @@ const slides: Slide[] = [
 function ProblemVisual() {
   return (
     <div className="intro-scene-panel relative h-[360px] w-full max-w-[420px] overflow-hidden rounded-[32px] border border-white/10 p-6 shadow-[0_40px_120px_rgba(0,0,0,0.38)]">
-      <div className="absolute -right-10 -top-10 h-48 w-48 rounded-full bg-rose-400/14 blur-3xl" />
+      <div className="absolute -right-10 -top-10 h-48 w-48 rounded-full bg-[#ffb357]/12 blur-3xl" />
       <p className="text-[10px] font-semibold uppercase tracking-[0.26em] text-white/30">Payout leaves first</p>
 
       {/* "TRUST PENDING" badge — top-right, fixed position */}
@@ -110,7 +110,7 @@ function ProblemVisual() {
       {/* Institution card — bottom-left */}
       <div className="intro-scene-card absolute bottom-8 left-6 w-[168px] rounded-[22px] border border-white/10 bg-slate-950/60 p-4 shadow-[0_16px_48px_rgba(0,0,0,0.32)]">
         <div className="flex items-center gap-2.5">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-blue-300/12 text-blue-200">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#ffb357]/14 text-[#ffd59f]">
             <Building2 className="h-4 w-4" />
           </div>
           <div className="min-w-0">
@@ -143,7 +143,7 @@ function ProblemVisual() {
         <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-white/40">Payout Queue</p>
         <p className="mt-2 text-[12px] font-semibold leading-5 text-white/88">Release is already in motion.</p>
         <div className="mt-3 h-1 rounded-full bg-white/10">
-          <div className="h-full w-[60%] rounded-full bg-linear-to-r from-rose-300 to-amber-300" />
+          <div className="h-full w-[60%] rounded-full bg-linear-to-r from-[#ffb357] to-[#ffd59f]" />
         </div>
       </div>
     </div>
@@ -153,13 +153,13 @@ function ProblemVisual() {
 function UsersVisual() {
   return (
     <div className="intro-scene-panel relative h-[360px] w-full max-w-[420px] overflow-hidden rounded-[32px] border border-white/10 p-6 shadow-[0_40px_120px_rgba(0,0,0,0.38)]">
-      <div className="absolute -left-8 top-6 h-40 w-40 rounded-full bg-blue-400/14 blur-3xl" />
-      <div className="absolute -right-8 bottom-6 h-40 w-40 rounded-full bg-emerald-400/12 blur-3xl" />
+      <div className="absolute -left-8 top-6 h-40 w-40 rounded-full bg-[#ffb357]/12 blur-3xl" />
+      <div className="absolute -right-8 bottom-6 h-40 w-40 rounded-full bg-[#ffd59f]/10 blur-3xl" />
 
       {/* Institution card — top-left */}
       <div className="intro-scene-card absolute left-6 top-14 w-[168px] rounded-[22px] border border-white/10 bg-slate-950/60 p-4 shadow-[0_16px_48px_rgba(0,0,0,0.32)]">
         <div className="flex items-center gap-2.5">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-blue-300/12 text-blue-200">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#ffb357]/14 text-[#ffd59f]">
             <Building2 className="h-4 w-4" />
           </div>
           <div className="min-w-0">
@@ -172,7 +172,7 @@ function UsersVisual() {
       {/* Beneficiary card — bottom-right */}
       <div className="intro-scene-card absolute bottom-14 right-6 w-[168px] rounded-[22px] border border-white/10 bg-slate-950/60 p-4 shadow-[0_16px_48px_rgba(0,0,0,0.32)]">
         <div className="flex items-center gap-2.5">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-emerald-300/12 text-emerald-200">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#fff0d6]/10 text-[#f6dfb6]">
             <Users className="h-4 w-4" />
           </div>
           <div className="min-w-0">
@@ -197,10 +197,10 @@ function UsersVisual() {
         {/* Badge bottom → Beneficiary card top-center */}
         <line x1="210" y1="192" x2="310" y2="224" stroke="rgba(255,255,255,0.08)" strokeWidth="1" />
         {/* Animated flow on top */}
-        <line x1="110" y1="142" x2="210" y2="174" stroke="rgba(125,211,252,0.0)" strokeWidth="1">
+        <line x1="110" y1="142" x2="210" y2="174" stroke="rgba(255,191,115,0.0)" strokeWidth="1">
           <animate attributeName="stroke-opacity" values="0;0.5;0" dur="2.4s" repeatCount="indefinite" />
         </line>
-        <line x1="210" y1="192" x2="310" y2="224" stroke="rgba(52,211,153,0.0)" strokeWidth="1">
+        <line x1="210" y1="192" x2="310" y2="224" stroke="rgba(255,213,159,0.0)" strokeWidth="1">
           <animate attributeName="stroke-opacity" values="0;0.5;0" dur="2.4s" begin="1.2s" repeatCount="indefinite" />
         </line>
       </svg>
@@ -217,7 +217,7 @@ function SolutionVisual() {
 
   return (
     <div className="intro-scene-panel relative h-[360px] w-full max-w-[420px] overflow-hidden rounded-[32px] border border-white/10 p-6 shadow-[0_40px_120px_rgba(0,0,0,0.38)]">
-      <div className="absolute -left-6 top-0 h-40 w-40 rounded-full bg-emerald-400/12 blur-3xl" />
+      <div className="absolute -left-6 top-0 h-40 w-40 rounded-full bg-[#ffb357]/12 blur-3xl" />
       <p className="text-[10px] font-semibold uppercase tracking-[0.26em] text-white/30">One clear trust path</p>
 
       {/* "Trusted Case" badge — top-right, fixed */}
@@ -269,18 +269,18 @@ function SquadVisual() {
 
   return (
     <div className="intro-scene-panel relative h-[360px] w-full max-w-[420px] overflow-hidden rounded-[32px] border border-white/10 p-6 shadow-[0_40px_120px_rgba(0,0,0,0.38)]">
-      <div className="absolute right-0 top-0 h-40 w-40 rounded-full bg-violet-400/14 blur-3xl" />
+      <div className="absolute right-0 top-0 h-40 w-40 rounded-full bg-[#ffb357]/12 blur-3xl" />
       <p className="text-[10px] font-semibold uppercase tracking-[0.26em] text-white/30">Squad payment rail</p>
 
       {/* account/lookup card — top-left */}
       <div className="intro-scene-card absolute left-6 top-14 w-[152px] rounded-[22px] border border-white/10 bg-slate-950/60 p-4 shadow-[0_16px_48px_rgba(0,0,0,0.32)]">
-        <p className="font-mono text-[11px] font-semibold text-violet-200/90">account/lookup</p>
+        <p className="font-mono text-[11px] font-semibold text-[#ffd59f]">account/lookup</p>
         <p className="mt-2 text-[11px] leading-[18px] text-white/45">Confirm the destination before money moves.</p>
       </div>
 
       {/* payout/requery card — bottom-right */}
       <div className="intro-scene-card absolute bottom-8 right-6 w-[152px] rounded-[22px] border border-white/10 bg-slate-950/60 p-4 shadow-[0_16px_48px_rgba(0,0,0,0.32)]">
-        <p className="font-mono text-[11px] font-semibold text-cyan-200/90">payout/requery</p>
+        <p className="font-mono text-[11px] font-semibold text-[#f7e1bc]">payout/requery</p>
         <p className="mt-2 text-[11px] leading-[18px] text-white/45">Track the final payout state after transfer.</p>
       </div>
 
@@ -305,7 +305,7 @@ function SquadVisual() {
 
       {/* Animated rail token */}
       <span
-        className="intro-scene-rail-token absolute h-[18px] w-[18px] rounded-full border border-blue-200/60 bg-blue-300 shadow-[0_0_20px_rgba(147,197,253,0.5)]"
+        className="intro-scene-rail-token absolute h-[18px] w-[18px] rounded-full border border-[#ffd59f]/70 bg-[#ffb357] shadow-[0_0_20px_rgba(255,179,87,0.5)]"
         style={{ top: dotY, left: nodes[0].x - 9 }}
       />
     </div>
@@ -314,16 +314,16 @@ function SquadVisual() {
 
 function AiVisual() {
   const signals = [
-    { label: 'Liveness', width: '78%', delay: '0s', tone: 'bg-sky-300/80' },
-    { label: 'Face Match', width: '91%', delay: '0.25s', tone: 'bg-emerald-300/80' },
-    { label: 'Document', width: '85%', delay: '0.5s', tone: 'bg-violet-300/80' },
-    { label: 'Risk', width: '70%', delay: '0.75s', tone: 'bg-amber-300/80' },
+    { label: 'Liveness', width: '78%', delay: '0s', tone: 'bg-[#ffd59f]/85' },
+    { label: 'Face Match', width: '91%', delay: '0.25s', tone: 'bg-[#bff6d5]/85' },
+    { label: 'Document', width: '85%', delay: '0.5s', tone: 'bg-[#ffbf73]/82' },
+    { label: 'Risk', width: '70%', delay: '0.75s', tone: 'bg-[#ff9d2f]/82' },
   ]
 
   return (
     <div className="intro-scene-panel relative h-[360px] w-full max-w-[420px] overflow-hidden rounded-[32px] border border-white/10 p-5 shadow-[0_40px_120px_rgba(0,0,0,0.38)]">
       {/* Centre glow */}
-      <div className="absolute left-1/2 top-1/2 h-56 w-56 -translate-x-1/2 -translate-y-1/2 rounded-full bg-indigo-400/10 blur-3xl" />
+      <div className="absolute left-1/2 top-1/2 h-56 w-56 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#ffb357]/10 blur-3xl" />
 
       {/* 2×2 signal grid — fills the whole card */}
       <div className="grid h-full grid-cols-2 gap-3">
@@ -377,12 +377,12 @@ function HandoffVisual() {
             <div key={index} className="flex items-center gap-1.5">
               <div className="h-3 overflow-hidden rounded-full bg-white/6" style={{ width: line.width }}>
                 <div
-                  className="intro-scene-type-line h-full rounded-full bg-linear-to-r from-sky-200/80 to-cyan-300/80"
+                  className="intro-scene-type-line h-full rounded-full bg-linear-to-r from-[#ffd59f] to-[#ffb357]"
                   style={{ animationDelay: line.delay }}
                 />
               </div>
               {index === lines.length - 1 && (
-                <span className="intro-scene-caret h-3 w-0.5 rounded-full bg-cyan-200/80" />
+                <span className="intro-scene-caret h-3 w-0.5 rounded-full bg-[#ffd59f]" />
               )}
             </div>
           ))}
@@ -504,15 +504,15 @@ export function IntroDeck({ onComplete }: IntroDeckProps) {
     if (slide.id === 'handoff') {
       return (
         <div className="flex flex-wrap items-center gap-4">
-          <div className="flex items-center gap-2 rounded-full border border-emerald-300/30 bg-emerald-300/10 px-4 py-2">
+          <div className="flex items-center gap-2 rounded-full border border-[#92f0bb]/24 bg-[#136e39]/16 px-4 py-2">
             <span className="relative flex h-2 w-2">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-300 opacity-75" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
             </span>
-            <span className="text-xs font-semibold text-emerald-200">Live and connected</span>
+            <span className="text-xs font-semibold text-[#bff6d5]">Live and connected</span>
           </div>
           <button
-            className="flex items-center gap-2 rounded-2xl bg-white px-7 py-3.5 text-sm font-bold text-slate-950 transition hover:scale-105 hover:bg-blue-50 active:scale-100"
+            className="prova-button-primary flex items-center gap-2 px-7 py-3.5 text-sm font-bold transition hover:scale-105 active:scale-100"
             onClick={complete}
             type="button"
           >
@@ -597,22 +597,22 @@ export function IntroDeck({ onComplete }: IntroDeckProps) {
       className={`fixed inset-0 z-50 flex flex-col overflow-hidden text-white transition-opacity duration-500 ${closing ? 'opacity-0' : 'opacity-100'}`}
       role="dialog"
     >
-      <div className="absolute inset-0 bg-[#03091e]" />
+      <div className="absolute inset-0 bg-[#090807]" />
       <div
         className={`pointer-events-none absolute -left-32 -top-16 h-[500px] w-[500px] rounded-full blur-[140px] transition-all duration-700 ${slide.orbColor}`}
       />
-      <div className="pointer-events-none absolute bottom-0 right-0 h-72 w-72 rounded-full bg-blue-600/8 blur-3xl" />
+      <div className="pointer-events-none absolute bottom-0 right-0 h-72 w-72 rounded-full bg-[#ff9d2f]/10 blur-3xl" />
 
       <div className="absolute top-0 left-0 z-20 h-px w-full bg-white/6">
         <div
-          className="h-full bg-blue-400 transition-all duration-500"
+          className="h-full bg-[#ffb357] transition-all duration-500"
           style={{ width: `${((activeIndex + 1) / slides.length) * 100}%` }}
         />
       </div>
 
       <header className="relative z-10 flex shrink-0 items-center justify-between gap-4 px-6 pb-4 pt-6 md:px-12">
         <div className="flex items-center gap-3">
-          <span className="rounded-full border border-blue-300/20 bg-blue-300/10 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-blue-200">
+          <span className="rounded-full border border-[#ffbf73]/28 bg-[#ff9d2f]/12 px-3 py-1 font-label text-[10px] font-bold uppercase tracking-[0.18em] text-[#ffd59f]">
             PROVA
           </span>
           <span className="hidden text-[10px] uppercase tracking-widest text-white/25 sm:block">Demo flow</span>
@@ -633,15 +633,15 @@ export function IntroDeck({ onComplete }: IntroDeckProps) {
         <div className={`mx-auto grid w-full max-w-7xl items-center gap-10 overflow-hidden transition-all duration-200 lg:grid-cols-[minmax(0,1fr)_minmax(360px,420px)] xl:gap-16 ${tx}`}>
           <div className="min-w-0 max-w-2xl lg:pr-4 xl:max-w-[620px]">
             <div className="flex flex-col gap-7">
-              <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-blue-300/60">
+              <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#c9a06a]/70">
                 {slide.eyebrow}
               </span>
 
-              <h1 className="text-[1.7rem] font-semibold leading-snug tracking-[-0.01em] text-white md:text-[2.1rem]">
+              <h1 className="font-display text-[1.9rem] font-semibold leading-[0.98] tracking-[-0.06em] text-white md:text-[3.45rem]">
                 {slide.title}
               </h1>
 
-              <p className="max-w-xl text-[0.95rem] leading-[1.85] text-white/50">
+              <p className="max-w-xl text-[0.98rem] leading-[1.9] text-[#d5c7b1]">
                 {slide.description}
               </p>
 
@@ -690,7 +690,7 @@ export function IntroDeck({ onComplete }: IntroDeckProps) {
             <ArrowLeft className="h-3.5 w-3.5" />
           </button>
           <button
-            className="flex items-center gap-2 rounded-full bg-white px-6 py-2.5 text-sm font-semibold text-slate-950 transition hover:bg-blue-50 active:scale-95 disabled:opacity-50"
+            className="flex items-center gap-2 rounded-full bg-white px-6 py-2.5 text-sm font-semibold text-slate-950 transition hover:bg-[#fff1db] active:scale-95 disabled:opacity-50"
             disabled={transitioning || closing}
             onClick={advance}
             type="button"

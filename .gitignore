@@ -24,3 +24,5 @@ dist-ssr
 *.sw?
 devserver*.log
 supabase/.temp/
+.codex/*
+!.codex/config.toml

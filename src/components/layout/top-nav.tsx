@@ -1,54 +1,60 @@
-import { Search, Bell } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Bell, Search, Sparkles } from 'lucide-react'
+import { Link } from 'react-router-dom'
 
 interface TopNavProps {
-  title?: string;
+  title?: string
 }
 
 export function TopNav({ title }: TopNavProps) {
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-[#ffffff] border-b border-[#c2c6d5] shadow-[0_1px_3px_rgba(0,0,0,0.12)] flex items-center justify-between px-4 md:px-6 h-16 w-full">
-      {/* Left: Brand + Search */}
-      <div className="flex items-center gap-4 md:gap-8">
-        <Link to="/" className="text-[20px] font-bold leading-7 text-[#0058bd] shrink-0">
-          PROVA
-        </Link>
-        {title && (
-          <span className="hidden md:block text-[14px] font-semibold text-[#424753]">{title}</span>
-        )}
-        {/* Search — hidden on mobile */}
-        <div className="relative hidden md:block">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#424753] w-4 h-4" />
-          <input 
-            className="bg-[#f2f3fd] border-none rounded-lg pl-9 pr-4 py-2 text-[14px] w-72 focus:ring-2 focus:ring-[#0058bd] focus:outline-none placeholder:text-[#424753]/60" 
-            placeholder="Search transactions, entities..." 
-            type="text"
-          />
-        </div>
-      </div>
+    <header className="fixed left-0 right-0 top-0 z-50 px-4 pt-4 md:px-4">
+      <div className="prova-panel mx-auto flex h-16 max-w-[1600px] items-center justify-between rounded-[24px] px-4 md:ml-[280px] md:px-6">
+        <div className="flex min-w-0 items-center gap-4">
+          <Link to="/" className="md:hidden">
+            <span className="font-display text-2xl font-semibold tracking-[-0.08em] text-white">PROVA</span>
+          </Link>
 
-      {/* Right: Actions + Profile */}
-      <div className="flex items-center gap-2 md:gap-4">
-        <button 
-          aria-label="Notifications"
-          className="p-2 rounded-full hover:bg-[#e7e7f1] transition-colors"
-        >
-          <Bell className="w-5 h-5 text-[#424753]" />
-        </button>
-
-        <div className="flex items-center gap-2 md:gap-3 pl-2 md:pl-4 border-l border-[#c2c6d5]">
-          {/* Name/role — hidden on small mobile */}
-          <div className="text-right hidden sm:block">
-            <p className="text-[14px] font-bold text-[#191b22] leading-5">Admin User</p>
-            <p className="text-[12px] text-[#424753] leading-4 tracking-wide">System Overseer</p>
+          <div className="hidden min-w-0 md:block">
+            <p className="font-label text-[11px] uppercase tracking-[0.16em] text-[#998a76]">
+              {title ?? 'Operator Console'}
+            </p>
           </div>
-          <img 
-            alt="Admin User Avatar" 
-            className="w-9 h-9 rounded-full object-cover bg-[#d8e2ff]" 
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuA7i6GYT2aVpE4ndExpRx21qhV4Qchy8dk7BwVHi8PYk6bo-oOjZS4mCtDnfwQJriAusw1_XsdVYd6SXk5DDi8c-m8phGpkjYWdI99B34jK7IOsgS5lQisF_Qx88ABn7IHGFTudz5Mgllb43MzZcnIJYd8GEOe3WYagDw7b-BOXV22GBmPMAyUZ9m4XoyXVxdiLC7Hnl51OBjrEvLuqwxq9FgqS6Bw5GrwpeSb4iS62M1-ZGpK18nA8dsH5sAYiqAB_ih32II6ib0g"
-          />
+
+          <div className="relative hidden lg:block">
+            <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#998a76]" />
+            <input
+              className="prova-input w-[320px] py-2.5 pl-10 pr-4 text-sm"
+              placeholder="Search cases, refs, or payouts..."
+              type="text"
+            />
+          </div>
+        </div>
+
+        <div className="flex shrink-0 items-center gap-2 md:gap-3">
+          <div className="prova-chip-warm hidden md:inline-flex">
+            <Sparkles className="h-3.5 w-3.5" />
+            Live demo
+          </div>
+
+          <button
+            aria-label="Notifications"
+            className="prova-button-secondary h-11 w-11 p-0"
+            type="button"
+          >
+            <Bell className="h-4.5 w-4.5" />
+          </button>
+
+          <div className="flex items-center gap-3 rounded-full border border-white/8 bg-white/4 px-2 py-1.5">
+            <div className="hidden text-right sm:block">
+              <p className="text-sm font-semibold text-white">Operator</p>
+              <p className="font-label text-[10px] uppercase tracking-[0.14em] text-[#998a76]">Admin</p>
+            </div>
+            <div className="flex h-10 w-10 items-center justify-center rounded-full border border-[#ffbf73]/26 bg-[linear-gradient(135deg,rgba(255,191,115,0.22),rgba(255,255,255,0.02))] text-sm font-bold text-[#fff2dc]">
+              PX
+            </div>
+          </div>
         </div>
       </div>
     </header>
-  );
+  )
 }

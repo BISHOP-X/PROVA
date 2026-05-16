@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Oxanium:wght@400;500;600;700&display=swap");
 @import "tailwindcss";
 
 /* =========================================================
@@ -7,9 +8,10 @@
 
 @theme {
   /* Fonts */
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
-  --font-label: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-label: "Oxanium", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Oxanium", ui-sans-serif, system-ui, sans-serif;
 
   /* === Color Tokens (exact Stitch values) === */
 
@@ -135,8 +137,8 @@
    Global Base Styles
    ==================================================== */
 :root {
-  background-color: var(--color-background);
-  color: var(--color-on-background);
+  background-color: #090807;
+  color: #f7efe2;
   font-family: var(--font-sans);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -148,6 +150,10 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
+  background:
+    radial-gradient(circle at 18% 14%, rgba(255, 175, 67, 0.16), transparent 24%),
+    radial-gradient(circle at 83% 9%, rgba(255, 198, 100, 0.12), transparent 24%),
+    linear-gradient(180deg, #090807 0%, #0d0a08 48%, #060505 100%);
 }
 
 /* Utility: data-mono font */
@@ -166,6 +172,241 @@ body {
 /* Smooth transitions for interactive elements */
 * {
   -webkit-tap-highlight-color: transparent;
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+.prova-shell {
+  position: relative;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 22% 0%, rgba(255, 176, 61, 0.12), transparent 26%),
+    radial-gradient(circle at 88% 10%, rgba(255, 132, 0, 0.12), transparent 20%),
+    linear-gradient(180deg, #0a0908 0%, #0b0908 35%, #060505 100%);
+}
+
+.prova-shell::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255, 208, 148, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 208, 148, 0.06) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.42), transparent 78%);
+  opacity: 0.38;
+}
+
+.prova-panel {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.015)),
+    rgba(10, 10, 10, 0.82);
+  border: 1px solid rgba(255, 214, 158, 0.14);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 28px 90px rgba(0, 0, 0, 0.32);
+  backdrop-filter: blur(18px);
+}
+
+.prova-panel-soft {
+  background:
+    linear-gradient(180deg, rgba(255, 173, 77, 0.08), rgba(255, 255, 255, 0.02)),
+    rgba(18, 15, 12, 0.84);
+  border: 1px solid rgba(255, 214, 158, 0.12);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 18px 50px rgba(0, 0, 0, 0.24);
+  backdrop-filter: blur(18px);
+}
+
+.prova-panel-muted {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 214, 158, 0.12);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+.prova-hero-panel {
+  position: relative;
+  overflow: hidden;
+  border-radius: 32px;
+}
+
+.prova-hero-panel::after {
+  content: "";
+  position: absolute;
+  inset: auto -10% -35% 30%;
+  height: 220px;
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgba(255, 170, 54, 0.3), transparent 68%);
+  filter: blur(28px);
+  pointer-events: none;
+}
+
+.prova-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 193, 112, 0.26);
+  background: rgba(255, 174, 67, 0.08);
+  padding: 8px 14px;
+  font-family: var(--font-label);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.22em;
+  white-space: nowrap;
+  text-transform: uppercase;
+  color: #f8c986;
+}
+
+.prova-chip,
+.prova-chip-warm,
+.prova-chip-danger,
+.prova-chip-success,
+.prova-chip-info {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 9999px;
+  padding: 8px 13px;
+  line-height: 1;
+  white-space: nowrap;
+  font-size: 12px;
+  font-weight: 700;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.prova-chip {
+  border: 1px solid rgba(255, 214, 158, 0.14);
+  background: rgba(255, 255, 255, 0.035);
+  color: #ede0cc;
+}
+
+.prova-chip-warm {
+  border-color: rgba(255, 180, 78, 0.28);
+  background: linear-gradient(135deg, rgba(255, 170, 54, 0.14), rgba(255, 255, 255, 0.04));
+  color: #ffd59f;
+}
+
+.prova-chip-danger {
+  border-color: rgba(255, 117, 117, 0.24);
+  background: rgba(186, 26, 26, 0.14);
+  color: #ffb4ab;
+}
+
+.prova-chip-success {
+  border-color: rgba(97, 214, 151, 0.24);
+  background: rgba(19, 110, 57, 0.16);
+  color: #94f0bc;
+}
+
+.prova-chip-info {
+  border-color: rgba(255, 214, 158, 0.18);
+  background: linear-gradient(135deg, rgba(255, 214, 158, 0.08), rgba(255, 255, 255, 0.04));
+  color: #ead6b2;
+}
+
+.prova-chip svg,
+.prova-chip-warm svg,
+.prova-chip-danger svg,
+.prova-chip-success svg,
+.prova-chip-info svg,
+.prova-kicker svg {
+  flex-shrink: 0;
+}
+
+.prova-button-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 190, 96, 0.32);
+  background: linear-gradient(135deg, rgba(255, 179, 83, 0.26), rgba(255, 132, 0, 0.12));
+  color: #fff8ed;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 12px 30px rgba(255, 153, 0, 0.18);
+}
+
+.prova-button-primary:hover {
+  background: linear-gradient(135deg, rgba(255, 194, 118, 0.32), rgba(255, 147, 37, 0.16));
+}
+
+.prova-button-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 214, 158, 0.16);
+  background: rgba(255, 255, 255, 0.03);
+  color: #f7efe2;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.prova-button-secondary:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.prova-input {
+  border-radius: 16px;
+  border: 1px solid rgba(255, 214, 158, 0.12);
+  background: rgba(255, 255, 255, 0.03);
+  color: #f7efe2;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+.prova-input::placeholder {
+  color: rgba(231, 215, 192, 0.42);
+}
+
+.prova-input:focus {
+  outline: none;
+  border-color: rgba(255, 184, 71, 0.42);
+  box-shadow:
+    0 0 0 2px rgba(255, 176, 61, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+.prova-table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.prova-table thead tr {
+  background: rgba(255, 255, 255, 0.03);
+  border-bottom: 1px solid rgba(255, 214, 158, 0.12);
+}
+
+.prova-table th {
+  color: rgba(239, 224, 202, 0.68);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.prova-table tbody tr {
+  border-bottom: 1px solid rgba(255, 214, 158, 0.08);
+}
+
+.prova-table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.prova-metric-value {
+  font-family: var(--font-display);
+  letter-spacing: -0.04em;
+}
+
+.prova-gold-text {
+  color: #ffd59f;
 }
 
 .intro-deck-shell {
@@ -221,8 +462,8 @@ body {
 .intro-scene-panel {
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03)),
-    radial-gradient(circle at 16% 12%, rgba(255, 255, 255, 0.08), transparent 36%),
-    rgba(6, 14, 33, 0.68);
+    radial-gradient(circle at 16% 12%, rgba(255, 196, 120, 0.08), transparent 36%),
+    rgba(18, 13, 9, 0.72);
 }
 
 .intro-scene-card {
