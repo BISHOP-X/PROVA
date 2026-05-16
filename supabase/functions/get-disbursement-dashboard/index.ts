@@ -60,6 +60,23 @@ function programFromRecord(record: ProgramRecord | ProgramRecord[] | null) {
   return record
 }
 
+function amountForProgram(programType: string, referenceId: string) {
+  const baseAmount =
+    programType.toLowerCase() === 'stipend'
+      ? 85000
+      : programType.toLowerCase() === 'grant'
+        ? 400000
+        : programType.toLowerCase() === 'bursary'
+          ? 120000
+          : 250000
+
+  const spreadSeed = referenceId
+    .split('')
+    .reduce((sum, character) => sum + character.charCodeAt(0), 0)
+
+  return baseAmount + (spreadSeed % 12) * 2500
+}
+
 async function refreshPendingTransfers() {
   if (getSquadMode() !== 'live') {
     return
@@ -180,11 +197,12 @@ Deno.serve(async (request) => {
         const latestPayout = latestPayoutByBeneficiary.get(beneficiary.id)
         const program = programFromRecord(beneficiary.program)
         const latestStatus = latestPayout?.squad_status ?? null
+        const computedAmount = amountForProgram(program?.program_type ?? 'Scholarship', beneficiary.student_identifier)
 
         return {
           accountName: beneficiary.account_name_lookup,
           accountNumberLast4: beneficiary.account_number.slice(-4),
-          amount: latestPayout ? Number(latestPayout.amount) : null,
+          amount: latestPayout ? Number(latestPayout.amount) : computedAmount,
           bankCode: beneficiary.bank_code,
           beneficiaryId: beneficiary.id,
           decision: latestResult?.decision ?? 'approved',
